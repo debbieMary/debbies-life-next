@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Transaction, Goal, GoalAction, WeightEntry, DiaryEntry } from '@/types';
-import { format, parseISO, isSameDay } from 'date-fns';
+import { Transaction, Goal, GoalAction, WeightEntry, DiaryEntry, PeriodEntry, PeriodCycleLength } from '@/types';
+import { format, parseISO, isSameDay, addDays, isWithinInterval } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, Target, X, TrendingUp, TrendingDown, Scale, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Target, X, TrendingUp, TrendingDown, Scale, ThumbsUp, ThumbsDown, Droplets, Sparkles } from 'lucide-react';
 import { MOODS } from '@/components/Diary/DiaryClient';
 
 const PINK   = '#7D3050';
@@ -26,19 +26,35 @@ interface Props {
   goalActions:   GoalAction[];
   weightEntries: WeightEntry[];
   diaryEntries:  DiaryEntry[];
+  periodEntries: PeriodEntry[];
+  cycleLengths:  PeriodCycleLength[];
 }
 
-export default function CalendarClient({ transactions, goals, goalActions, weightEntries, diaryEntries }: Props) {
+export default function CalendarClient({ transactions, goals, goalActions, weightEntries, diaryEntries, periodEntries, cycleLengths }: Props) {
   const today = new Date();
   const [year, setYear]     = useState(today.getFullYear());
   const [month, setMonth]   = useState(today.getMonth());
   const [selected, setSelected] = useState<Date | null>(null);
+
+  // Ovulación estimada
+  const latestCycle  = [...cycleLengths].sort((a, b) => a.recorded_at.localeCompare(b.recorded_at)).at(-1);
+  const latestPeriod = [...periodEntries].sort((a, b) => a.start_date.localeCompare(b.start_date)).at(-1);
+  const ovulationDay = latestCycle && latestPeriod
+    ? addDays(parseISO(latestPeriod.start_date), latestCycle.cycle_days - 14)
+    : null;
 
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay    = getFirstDayOfMonth(year, month);
 
   const prevMonth = () => { if (month === 0) { setYear(y => y - 1); setMonth(11); } else setMonth(m => m - 1); };
   const nextMonth = () => { if (month === 11) { setYear(y => y + 1); setMonth(0); } else setMonth(m => m + 1); };
+
+  const isPeriodDay = (date: Date) =>
+    periodEntries.some((e) =>
+      isWithinInterval(date, { start: parseISO(e.start_date), end: addDays(parseISO(e.start_date), e.duration_days - 1) })
+    );
+
+  const isOvulationDay = (date: Date) => ovulationDay ? isSameDay(date, ovulationDay) : false;
 
   const getEventsForDay = (day: number) => {
     const date  = new Date(year, month, day);
@@ -47,7 +63,9 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
     const acts  = goalActions.filter((a) => a.action_date && isSameDay(parseISO(a.action_date), date));
     const wts   = weightEntries.filter((w) => isSameDay(parseISO(w.date), date));
     const diary = diaryEntries.filter((d) => isSameDay(parseISO(d.date), date));
-    return { txs, gls, acts, wts, diary };
+    const period = isPeriodDay(date);
+    const ovul   = isOvulationDay(date);
+    return { txs, gls, acts, wts, diary, period, ovul };
   };
 
   const selEvents = selected ? {
@@ -56,6 +74,8 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
     acts:  goalActions.filter((a) => a.action_date && isSameDay(parseISO(a.action_date), selected)),
     wts:   weightEntries.filter((w) => isSameDay(parseISO(w.date), selected)),
     diary: diaryEntries.filter((d) => isSameDay(parseISO(d.date), selected)),
+    period: isPeriodDay(selected),
+    ovul:   isOvulationDay(selected),
   } : null;
 
   const hasEvents = selEvents && (
@@ -63,7 +83,9 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
     selEvents.gls.length > 0 ||
     selEvents.acts.length > 0 ||
     selEvents.wts.length > 0 ||
-    selEvents.diary.length > 0
+    selEvents.diary.length > 0 ||
+    selEvents.period ||
+    selEvents.ovul
   );
 
   const fmt = (t: Transaction) =>
@@ -111,7 +133,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
 
           {Array.from({ length: daysInMonth }).map((_, i) => {
             const day = i + 1;
-            const { txs, gls, acts, wts, diary } = getEventsForDay(day);
+            const { txs, gls, acts, wts, diary, period, ovul } = getEventsForDay(day);
             const ingresoCount = txs.filter(t => t.type === 'ingreso').length;
             const gastoCount   = txs.filter(t => t.type === 'gasto').length;
             const diaryMood    = diary.length > 0 ? MOODS.find(m => m.value === diary[0].mood) : null;
@@ -128,10 +150,14 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
                   cursor: 'pointer',
                 }}
                 className="min-h-[56px] sm:min-h-[80px] p-1 sm:p-2 hover:bg-pink-50 transition-colors">
-                <span className="text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full mb-1"
-                  style={{ background: isToday ? PINK : 'transparent', color: isToday ? '#fff' : '#2a1520' }}>
-                  {day}
-                </span>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full"
+                    style={{ background: isToday ? PINK : 'transparent', color: isToday ? '#fff' : '#2a1520' }}>
+                    {day}
+                  </span>
+                  {period && <Droplets size={13} style={{ color: '#F472B6' }} />}
+                  {ovul   && <Sparkles size={13} style={{ color: '#2DD4BF' }} />}
+                </div>
 
                 {/* Mobile: dots */}
                 <div className="flex flex-wrap gap-0.5 sm:hidden">
@@ -214,6 +240,27 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
 
             {/* Modal body */}
             <div className="overflow-y-auto flex-1 px-5 py-4 space-y-5">
+
+              {/* Ciclo */}
+              {(selEvents!.period || selEvents!.ovul) && (
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#D4A0B0' }}>Ciclo</p>
+                  <div className="space-y-2">
+                    {selEvents!.period && (
+                      <div style={{ background: '#FFE4EE', border: '1px solid #FFBDD6' }} className="rounded-xl px-3 py-2.5 flex items-center gap-2">
+                        <Droplets size={14} style={{ color: '#E8739A' }} />
+                        <span className="text-sm font-semibold" style={{ color: '#BE185D' }}>Día de período</span>
+                      </div>
+                    )}
+                    {selEvents!.ovul && (
+                      <div style={{ background: '#CCFBF1', border: '1px solid #99F6E4' }} className="rounded-xl px-3 py-2.5 flex items-center gap-2">
+                        <Sparkles size={14} style={{ color: '#2DD4BF' }} />
+                        <span className="text-sm font-semibold" style={{ color: '#2A9D8F' }}>Día de ovulación</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Diario */}
               {selEvents!.diary.length > 0 && (

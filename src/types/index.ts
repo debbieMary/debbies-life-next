@@ -63,3 +63,28 @@ export interface DiaryEntry {
   mood: DiaryMood;
   created_at: string;
 }
+
+export interface PeriodEntry {
+  id: string;
+  start_date: string;
+  duration_days: number;
+  notes: string;
+  created_at: string;
+}
+
+export interface PeriodCycleLength {
+  id: string;
+  cycle_days: number;
+  notes: string;
+  recorded_at: string;
+  created_at: string;
+}
+
+export interface Usuario {
+  id: string;
+  nombre: string;
+  usuario: string;
+  sexo: string | null;
+  direccion: string | null;
+  telefono: string | null;
+}

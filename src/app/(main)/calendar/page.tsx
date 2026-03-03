@@ -6,12 +6,22 @@ import { CalendarDays } from 'lucide-react';
 export const revalidate = 0;
 
 export default async function CalendarPage() {
-  const [{ data: transactions }, { data: goals }, { data: goalActions }, { data: weightEntries }, { data: diaryEntries }] = await Promise.all([
+  const [
+    { data: transactions },
+    { data: goals },
+    { data: goalActions },
+    { data: weightEntries },
+    { data: diaryEntries },
+    { data: periodEntries },
+    { data: cycleLengths },
+  ] = await Promise.all([
     supabase.from('transactions').select('*'),
     supabase.from('goals').select('*'),
     supabase.from('goal_actions').select('*'),
     supabase.from('weight_entries').select('*').neq('notes', '__target__'),
     supabase.from('diary_entries').select('*'),
+    supabase.from('period_entries').select('*'),
+    supabase.from('period_cycle_lengths').select('*').order('recorded_at', { ascending: true }),
   ]);
   return (
     <div>
@@ -22,6 +32,8 @@ export default async function CalendarPage() {
         goalActions={goalActions ?? []}
         weightEntries={weightEntries ?? []}
         diaryEntries={diaryEntries ?? []}
+        periodEntries={periodEntries ?? []}
+        cycleLengths={cycleLengths ?? []}
       />
     </div>
   );

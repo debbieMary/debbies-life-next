@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Transaction, Goal, GoalAction, ExchangeRate, WeightEntry, DiaryEntry } from '@/types';
+import { Transaction, Goal, GoalAction, ExchangeRate, WeightEntry, DiaryEntry, PeriodEntry, PeriodCycleLength } from '@/types';
 import IncomeExpenseChart from './IncomeExpenseChart';
 import GoalsByCategoryChart from './GoalsByCategoryChart';
 import DiarySummary from './DiarySummary';
 import WeightSummary from './WeightSummary';
+import PeriodSummary from './PeriodSummary';
 import ExportPDFButton from './ExportPDFButton';
 
 const PINK   = '#7D3050';
@@ -22,9 +23,11 @@ interface Props {
   weightEntries: WeightEntry[];
   weightTarget:  number | null;
   diaryEntries:  DiaryEntry[];
+  periodEntries: PeriodEntry[];
+  cycleLengths:  PeriodCycleLength[];
 }
 
-export default function DashboardClient({ transactions, goals, goalActions, rates, weightEntries, weightTarget, diaryEntries }: Props) {
+export default function DashboardClient({ transactions, goals, goalActions, rates, weightEntries, weightTarget, diaryEntries, periodEntries, cycleLengths }: Props) {
   const [dateFrom, setDateFrom] = useState(d7());
   const [dateTo,   setDateTo]   = useState(today());
 
@@ -70,7 +73,7 @@ export default function DashboardClient({ transactions, goals, goalActions, rate
             <p className="text-sm mt-0.5" style={{ color: '#D4A0B0' }}>Tu resumen de vida al día</p>
           </div>
         </div>
-        <ExportPDFButton transactions={transactions} goals={goals} goalActions={goalActions} rates={rates} weightEntries={weightEntries} weightTarget={weightTarget} diaryEntries={diaryEntries} />
+        <ExportPDFButton transactions={transactions} goals={goals} goalActions={goalActions} rates={rates} weightEntries={weightEntries} weightTarget={weightTarget} diaryEntries={diaryEntries} periodEntries={periodEntries} cycleLengths={cycleLengths} />
       </div>
 
       {/* Filtro de fecha */}
@@ -109,6 +112,10 @@ export default function DashboardClient({ transactions, goals, goalActions, rate
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
         <DiarySummary entries={diaryEntries} dateFrom={dateFrom} dateTo={dateTo} />
         <WeightSummary entries={filteredWt} target={weightTarget} />
+      </div>
+
+      <div className="mb-5">
+        <PeriodSummary periodEntries={periodEntries} cycleLengths={cycleLengths} />
       </div>
     </div>
   );

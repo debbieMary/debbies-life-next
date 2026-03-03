@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { FileDown, X, Calendar, CalendarRange } from 'lucide-react';
-import { Transaction, Goal, GoalAction, ExchangeRate, WeightEntry, DiaryEntry } from '@/types';
+import { Transaction, Goal, GoalAction, ExchangeRate, WeightEntry, DiaryEntry, PeriodEntry, PeriodCycleLength } from '@/types';
 import { exportReportPDF, ReportPeriod } from '@/lib/exportPDF';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -18,11 +18,13 @@ interface Props {
   weightEntries: WeightEntry[];
   weightTarget:  number | null;
   diaryEntries:  DiaryEntry[];
+  periodEntries: PeriodEntry[];
+  cycleLengths:  PeriodCycleLength[];
 }
 
 type Mode = 'month' | 'range';
 
-export default function ExportPDFButton({ transactions, goals, goalActions, rates, weightEntries, weightTarget, diaryEntries }: Props) {
+export default function ExportPDFButton({ transactions, goals, goalActions, rates, weightEntries, weightTarget, diaryEntries, periodEntries, cycleLengths }: Props) {
   const [open, setOpen]   = useState(false);
   const [mode, setMode]   = useState<Mode>('month');
   const [loading, setLoading] = useState(false);
@@ -40,7 +42,18 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
   const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-  const years = Array.from({ length: 5 }, (_, i) => today.getFullYear() - i);
+  const earliestYear = Math.min(
+    ...[ ...transactions.map((t) => +t.date.slice(0, 4)),
+         ...weightEntries.map((w) => +w.date.slice(0, 4)),
+         ...diaryEntries.map((d) => +d.date.slice(0, 4)),
+         ...periodEntries.map((p) => +p.start_date.slice(0, 4)),
+    ].filter(Boolean),
+    today.getFullYear(),
+  );
+  const years = Array.from(
+    { length: today.getFullYear() - earliestYear + 1 },
+    (_, i) => today.getFullYear() - i,
+  );
 
   const handleExport = async () => {
     setLoading(true);
@@ -63,7 +76,7 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
 
     // Small delay so the button shows "Generando..."
     await new Promise((r) => setTimeout(r, 100));
-    exportReportPDF(transactions, goals, goalActions, rates, period, weightEntries, weightTarget, diaryEntries);
+    exportReportPDF(transactions, goals, goalActions, rates, period, weightEntries, weightTarget, diaryEntries, periodEntries, cycleLengths);
     setLoading(false);
     setOpen(false);
   };
@@ -147,19 +160,16 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
                 </div>
                 <div>
                   <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Año</label>
-                  <div className="flex gap-2">
+                  <select
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(Number(e.target.value))}
+                    style={{ border: `1px solid ${BORDER}`, color: PINK }}
+                    className="w-full px-3 py-2 rounded-xl text-sm font-semibold bg-white outline-none focus:ring-2 focus:ring-pink-200"
+                  >
                     {years.map((y) => (
-                      <button key={y} onClick={() => setSelectedYear(y)}
-                        style={{
-                          background: selectedYear === y ? '#FFD6E0' : '#fff7f9',
-                          color: PINK,
-                          border: `1px solid ${selectedYear === y ? '#f5b8cc' : BORDER}`,
-                        }}
-                        className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all">
-                        {y}
-                      </button>
+                      <option key={y} value={y}>{y}</option>
                     ))}
-                  </div>
+                  </select>
                 </div>
                 <p className="text-xs text-center" style={{ color: '#D4A0B0' }}>
                   Período: {MONTHS[selectedMonth]} {selectedYear}

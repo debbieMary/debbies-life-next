@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Transaction, Goal, GoalAction, ExchangeRate, WeightEntry, DiaryEntry } from '@/types';
-import { format, parseISO, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
+import { Transaction, Goal, GoalAction, ExchangeRate, WeightEntry, DiaryEntry, PeriodEntry, PeriodCycleLength } from '@/types';
+import { format, parseISO, isWithinInterval, startOfDay, endOfDay, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 
 const PINK       = [201, 132, 154] as [number, number, number];
@@ -12,7 +12,7 @@ const GREEN      = [6, 95, 70]    as [number, number, number];
 const RED        = [153, 27, 27]  as [number, number, number];
 
 const fmtUSD = (n: number) =>
-  n.toLocaleString('es-ES', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+  `$ ${n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmtBOB = (n: number) =>
   `Bs. ${n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmtDate = (d: string) =>
@@ -47,6 +47,8 @@ export function exportReportPDF(
   weightEntries: WeightEntry[] = [],
   weightTarget:  number | null = null,
   diaryEntries:  DiaryEntry[]  = [],
+  periodEntries: PeriodEntry[] = [],
+  cycleLengths:  PeriodCycleLength[] = [],
 ) {
   const from = startOfDay(parseISO(period.from));
   const to   = endOfDay(parseISO(period.to));
@@ -59,13 +61,18 @@ export function exportReportPDF(
   const filteredWeight  = [...weightEntries].filter((w) => inPeriod(w.date)).sort((a, b) => a.date.localeCompare(b.date));
   const filteredDiary   = diaryEntries.filter((d) => inPeriod(d.date));
 
-  const rateForPeriod = rates.find((r) => r.date <= period.to)?.rate ?? rates[0]?.rate ?? 1;
-  const toUSD = (amount: number, currency: string) =>
-    currency === 'BOB' ? amount / rateForPeriod : amount;
+  const sortedRates = [...rates].sort((a, b) => b.date.localeCompare(a.date));
+  const rateForPeriod = sortedRates.find((r) => r.date <= period.to)?.rate ?? sortedRates[0]?.rate ?? 1;
 
-  const income   = filteredTx.filter((t) => t.type === 'ingreso').reduce((s, t) => s + toUSD(t.amount, t.currency), 0);
-  const expenses = filteredTx.filter((t) => t.type === 'gasto').reduce((s, t) => s + toUSD(t.amount, t.currency), 0);
-  const balance  = income - expenses;
+  const incomeTx   = filteredTx.filter((t) => t.type === 'ingreso');
+  const expensesTx = filteredTx.filter((t) => t.type === 'gasto');
+
+  const incomeBOB   = incomeTx.filter((t) => t.currency === 'BOB').reduce((s, t) => s + t.amount, 0);
+  const incomeUSD   = incomeTx.filter((t) => t.currency === 'USD').reduce((s, t) => s + t.amount, 0);
+  const expensesBOB = expensesTx.filter((t) => t.currency === 'BOB').reduce((s, t) => s + t.amount, 0);
+  const expensesUSD = expensesTx.filter((t) => t.currency === 'USD').reduce((s, t) => s + t.amount, 0);
+  const balanceBOB  = incomeBOB - expensesBOB;
+  const balanceUSD  = incomeUSD - expensesUSD;
 
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const W = doc.internal.pageSize.getWidth();
@@ -99,11 +106,11 @@ export function exportReportPDF(
 
   autoTable(doc, {
     startY: y,
-    head: [['Concepto', 'En USD', 'En BOB']],
+    head: [['Concepto', 'Total en BOB', 'Total en USD']],
     body: [
-      ['Ingresos', fmtUSD(income),   fmtBOB(income   * rateForPeriod)],
-      ['Gastos',   fmtUSD(expenses), fmtBOB(expenses * rateForPeriod)],
-      ['Balance',  fmtUSD(balance),  fmtBOB(balance  * rateForPeriod)],
+      ['Ingresos', fmtBOB(incomeBOB),   fmtUSD(incomeUSD)],
+      ['Gastos',   fmtBOB(expensesBOB), fmtUSD(expensesUSD)],
+      ['Balance',  fmtBOB(balanceBOB),  fmtUSD(balanceUSD)],
     ],
     theme: 'grid',
     headStyles: { fillColor: PINK, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
@@ -223,19 +230,26 @@ export function exportReportPDF(
     if (y > 220) { doc.addPage(); y = 20; }
     y = sectionTitle(doc, 'Tracker de Peso', y);
 
-    // Subtitle with target info
     const latest = filteredWeight[filteredWeight.length - 1];
     const first  = filteredWeight[0];
     const diff   = latest.weight - first.weight;
 
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...GRAY);
-    let subtitle = `Registros en el período: ${filteredWeight.length}`;
-    if (weightTarget) subtitle += `  ·  Meta: ${weightTarget} kg`;
-    if (filteredWeight.length > 1) subtitle += `  ·  Variación: ${diff > 0 ? '+' : ''}${diff.toFixed(1)} kg`;
-    doc.text(subtitle, 14, y);
-    y += 8;
+    const weightSummary: [string, string][] = [
+      ['Registros en el período', String(filteredWeight.length)],
+    ];
+    if (weightTarget) weightSummary.push(['Meta', `${weightTarget} kg`]);
+    if (filteredWeight.length > 1) weightSummary.push(['Variación total', `${diff > 0 ? '+' : ''}${diff.toFixed(1)} kg`]);
+
+    autoTable(doc, {
+      startY: y,
+      body: weightSummary,
+      theme: 'grid',
+      bodyStyles: { textColor: DARK, fontSize: 9 },
+      alternateRowStyles: { fillColor: [255, 247, 249] },
+      columnStyles: { 0: { fontStyle: 'bold', cellWidth: 70 } },
+      margin: { left: 14, right: 14 },
+    });
+    y = (doc as any).lastAutoTable.finalY + 6;
 
     autoTable(doc, {
       startY: y,
@@ -254,6 +268,12 @@ export function exportReportPDF(
       headStyles: { fillColor: PINK, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
       bodyStyles: { textColor: DARK, fontSize: 8 },
       alternateRowStyles: { fillColor: [255, 247, 249] },
+      columnStyles: {
+        0: { cellWidth: 28 },
+        1: { cellWidth: 28, halign: 'center' },
+        2: { cellWidth: 24, halign: 'center' },
+        3: { cellWidth: 'auto', overflow: 'linebreak' },
+      },
       didParseCell: (data) => {
         if (data.section === 'body' && data.column.index === 2 && data.cell.raw) {
           const val = String(data.cell.raw);
@@ -263,6 +283,68 @@ export function exportReportPDF(
       },
       margin: { left: 14, right: 14 },
     });
+    y = (doc as any).lastAutoTable.finalY + 10;
+  }
+
+  // ── Ciclo Menstrual ──────────────────────────────────────
+  const sortedCycles  = [...cycleLengths].sort((a, b) => a.recorded_at.localeCompare(b.recorded_at));
+  const currentCycle  = sortedCycles[sortedCycles.length - 1];
+  const sortedPeriods = [...periodEntries].sort((a, b) => a.start_date.localeCompare(b.start_date));
+  const lastPeriod    = sortedPeriods[sortedPeriods.length - 1];
+  const filteredPeriods = periodEntries.filter((e) => inPeriod(e.start_date));
+
+  if (currentCycle || periodEntries.length > 0) {
+    if (y > 220) { doc.addPage(); y = 20; }
+    y = sectionTitle(doc, 'Ciclo Menstrual', y);
+
+    // Resumen del ciclo
+    const nextPeriod = lastPeriod && currentCycle
+      ? addDays(parseISO(lastPeriod.start_date), currentCycle.cycle_days) : null;
+    const ovulDate = lastPeriod && currentCycle
+      ? addDays(parseISO(lastPeriod.start_date), currentCycle.cycle_days - 14) : null;
+
+    const summaryRows: [string, string][] = [];
+    if (currentCycle) summaryRows.push(['Duración del ciclo', `cada ${currentCycle.cycle_days} días`]);
+    if (lastPeriod)   summaryRows.push(['Último período', `${fmtDate(lastPeriod.start_date)} · ${lastPeriod.duration_days} días`]);
+    if (nextPeriod)   summaryRows.push(['Próximo período estimado', format(nextPeriod, "d 'de' MMMM yyyy", { locale: es })]);
+    if (ovulDate)     summaryRows.push(['Ovulación estimada', format(ovulDate, "d 'de' MMMM yyyy", { locale: es })]);
+
+    if (summaryRows.length > 0) {
+      autoTable(doc, {
+        startY: y,
+        body: summaryRows,
+        theme: 'grid',
+        bodyStyles: { textColor: DARK, fontSize: 9 },
+        alternateRowStyles: { fillColor: [255, 247, 249] },
+        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 70 } },
+        margin: { left: 14, right: 14 },
+      });
+      y = (doc as any).lastAutoTable.finalY + 8;
+    }
+
+    // Períodos en el rango
+    if (filteredPeriods.length > 0) {
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...PINK);
+      doc.text(`Períodos en el período (${filteredPeriods.length})`, 14, y);
+      y += 6;
+      autoTable(doc, {
+        startY: y,
+        head: [['Fecha inicio', 'Duración', 'Notas']],
+        body: filteredPeriods.map((e) => [
+          fmtDate(e.start_date),
+          `${e.duration_days} días`,
+          e.notes || '—',
+        ]),
+        theme: 'grid',
+        headStyles: { fillColor: PINK, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
+        bodyStyles: { textColor: DARK, fontSize: 9 },
+        alternateRowStyles: { fillColor: [255, 247, 249] },
+        margin: { left: 14, right: 14 },
+      });
+      y = (doc as any).lastAutoTable.finalY + 10;
+    }
   }
 
   // ── Footer ───────────────────────────────────────────────
