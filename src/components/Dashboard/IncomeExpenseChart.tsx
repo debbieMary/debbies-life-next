@@ -51,16 +51,16 @@ export default function IncomeExpenseChart({ transactions, dateFrom, dateTo }: P
               ]} contentStyle={{ border: `1px solid ${BORDER}`, borderRadius: 12, fontSize: 12 }} />
               <Legend wrapperStyle={{ fontSize: 11, color: '#D4A0B0' }} />
               <Bar dataKey="ingresoUSD" name="Ingresos $"  fill="#86efac" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="ingresoUSD" position="top" formatter={(v: number) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#065f46', fontWeight: 700 }} />
+                <LabelList dataKey="ingresoUSD" position="top" formatter={(v: any) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#065f46', fontWeight: 700 }} />
               </Bar>
               <Bar dataKey="gastoUSD"   name="Gastos $"    fill="#C9849A" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="gastoUSD"   position="top" formatter={(v: number) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#991b1b', fontWeight: 700 }} />
+                <LabelList dataKey="gastoUSD"   position="top" formatter={(v: any) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#991b1b', fontWeight: 700 }} />
               </Bar>
               <Bar dataKey="ingresoBOB" name="Ingresos Bs" fill="#6ee7b7" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="ingresoBOB" position="top" formatter={(v: number) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#065f46', fontWeight: 700 }} />
+                <LabelList dataKey="ingresoBOB" position="top" formatter={(v: any) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#065f46', fontWeight: 700 }} />
               </Bar>
               <Bar dataKey="gastoBOB"   name="Gastos Bs"   fill="#f9a8d4" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="gastoBOB"   position="top" formatter={(v: number) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#991b1b', fontWeight: 700 }} />
+                <LabelList dataKey="gastoBOB"   position="top" formatter={(v: any) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#991b1b', fontWeight: 700 }} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
