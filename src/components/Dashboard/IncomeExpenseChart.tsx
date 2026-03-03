@@ -46,8 +46,8 @@ export default function IncomeExpenseChart({ transactions, dateFrom, dateTo }: P
               <XAxis dataKey="periodo" tick={{ fontSize: 10, fill: '#D4A0B0' }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: '#D4A0B0' }} axisLine={false} tickLine={false}
                 tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v)} />
-              <Tooltip formatter={(v: any, name: string) => [
-                name.includes('$') ? fmtUSD(v) : fmtBOB(v), name
+              <Tooltip formatter={(v: any, name: string | undefined) => [
+                name?.includes('$') ? fmtUSD(v) : fmtBOB(v), name
               ]} contentStyle={{ border: `1px solid ${BORDER}`, borderRadius: 12, fontSize: 12 }} />
               <Legend wrapperStyle={{ fontSize: 11, color: '#D4A0B0' }} />
               <Bar dataKey="ingresoUSD" name="Ingresos $"  fill="#86efac" radius={[4,4,0,0]} maxBarSize={40}>
