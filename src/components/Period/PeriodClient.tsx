@@ -112,8 +112,8 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
         <div className="grid grid-cols-2 gap-3">
 
           <div className="rounded-2xl p-4 relative overflow-hidden" style={{ background: LAV_BG, border: `1.5px solid ${LAV_BORDER}` }}>
-            <Flower2 size={52} style={{ position:'absolute', bottom:-10, right:-10, color: LAV_BORDER, opacity: 1 }} />
-            <Flower2 size={22} style={{ position:'absolute', top:6, right:8, color: LAV_TEXT, opacity: 0.4 }} />
+            <Flower2 size={52} style={{ position:'absolute', bottom:-10, right:-10, color: 'var(--pc-lav-text)', opacity: 1 }} />
+            <Flower2 size={22} style={{ position:'absolute', top:6, right:8, color: 'var(--pc-lav-text)', opacity: 0.4 }} />
             <div className="flex items-center gap-1.5 mb-2">
               <Droplets size={13} style={{ color: LAV_TEXT }} />
               <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: LAV_TEXT }}>Período</p>
@@ -131,8 +131,8 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
           </div>
 
           <div className="rounded-2xl p-4 relative overflow-hidden" style={{ background: TEAL_BG, border: `1.5px solid ${TEAL_BORDER}` }}>
-            <Flower2 size={52} style={{ position:'absolute', bottom:-10, right:-10, color: TEAL_BORDER, opacity: 1 }} />
-            <Flower2 size={22} style={{ position:'absolute', top:6, right:8, color: TEAL_TEXT, opacity: 0.4 }} />
+            <Flower2 size={52} style={{ position:'absolute', bottom:-10, right:-10, color: '#0F766E', opacity: 1 }} />
+            <Flower2 size={22} style={{ position:'absolute', top:6, right:8, color: '#0F766E', opacity: 0.4 }} />
             <div className="flex items-center gap-1.5 mb-2">
               <Sparkles size={13} style={{ color: TEAL_TEXT }} />
               <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: TEAL_TEXT }}>Ovulación</p>
@@ -198,7 +198,7 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
           <div className="flex items-center justify-between px-4 py-2.5 relative overflow-hidden"
             style={{ background: PINK_BG, borderBottom: `1px solid ${PINK_BORDER}` }}>
             <Flower2 size={36} style={{ position:'absolute', right:60, top:-6, color: PINK_BORDER, opacity: 0.9 }} />
-            <Flower2 size={20} style={{ position:'absolute', right:30, bottom:-4, color: PINK_TEXT, opacity: 0.35 }} />
+            <Flower2 size={20} style={{ position:'absolute', right:30, bottom:-4, color: PINK_BORDER, opacity: 0.9 }} />
             <div className="flex items-center gap-1.5 relative">
               <Flower2 size={13} style={{ color: PINK_TEXT }} />
               <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: PINK_TEXT }}>Mis períodos</p>
