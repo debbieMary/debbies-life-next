@@ -7,8 +7,8 @@ import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Plus, X, Pencil, Trash2, Sparkles, Sun, Minus, CloudRain, Flame, Zap, Moon, Thermometer, BookHeart } from 'lucide-react';
 
-const PINK   = '#7D3050';
-const BORDER = '#fce8ee';
+const PINK   = 'var(--pink)';
+const BORDER = 'var(--border)';
 
 export const MOODS: { value: DiaryMood; label: string; Icon: any; bg: string; color: string }[] = [
   { value: 'increible', label: 'Increible', Icon: Sparkles,    bg: '#fef9c3', color: '#854d0e' },
@@ -107,31 +107,31 @@ export default function DiaryClient({ initial }: Props) {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-semibold" style={{ color: PINK }}>Mis entradas</h2>
         <button onClick={openAdd}
-          style={{ background: '#FFD6E0', color: PINK, border: '1px solid #f5b8cc' }}
+          style={{ background: 'var(--pink-bg)', color: PINK, border: '1px solid var(--pink-border)' }}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold hover:opacity-80 transition-opacity">
           <Plus size={15} /> Nueva entrada
         </button>
       </div>
 
       {/* Filtro de fecha */}
-      <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl p-3 mb-5 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div style={{ background: 'var(--card)', border: `1px solid ${BORDER}` }} className="rounded-2xl p-3 mb-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1 min-w-0">
             <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
-              style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
-              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
-            <span className="text-xs shrink-0" style={{ color: '#D4A0B0' }}>—</span>
+              style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
+              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
+            <span className="hidden sm:inline text-xs shrink-0" style={{ color: 'var(--muted)' }}>—</span>
             <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
-              style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
-              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
+              style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
+              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
           </div>
           <div className="flex items-center gap-1 shrink-0">
             {PRESETS.map(({ label, days }) => (
               <button key={label} onClick={() => setPreset(days)}
                 style={{
-                  background: isActive(days) ? '#FFD6E0' : '#fff7f9',
+                  background: isActive(days) ? 'var(--pink-bg)' : 'var(--btn-inactive)',
                   color: PINK,
-                  border: `1px solid ${isActive(days) ? '#f5b8cc' : BORDER}`,
+                  border: `1px solid ${isActive(days) ? 'var(--pink-border)' : BORDER}`,
                 }}
                 className="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all">
                 {label}
@@ -142,7 +142,7 @@ export default function DiaryClient({ initial }: Props) {
       </div>
 
       {sorted.length === 0 ? (
-        <div className="text-center py-16" style={{ color: '#D4A0B0' }}>
+        <div className="text-center py-16" style={{ color: 'var(--muted)' }}>
           <BookHeart size={40} className="mx-auto mb-3 opacity-30" />
           <p className="text-sm">Sin entradas aún. Escribe tu primer dia.</p>
         </div>
@@ -153,7 +153,7 @@ export default function DiaryClient({ initial }: Props) {
             return (
               <div key={entry.id}
                 onClick={() => setSelected(selected?.id === entry.id ? null : entry)}
-                style={{ background: '#fff', border: `1px solid ${BORDER}`, cursor: 'pointer' }}
+                style={{ background: 'var(--card)', border: `1px solid ${BORDER}`, cursor: 'pointer' }}
                 className="rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-11 h-11 flex items-center justify-center rounded-xl"
@@ -162,15 +162,15 @@ export default function DiaryClient({ initial }: Props) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 mb-1">
-                      <p className="text-sm font-bold truncate" style={{ color: '#2a1520' }}>{entry.title}</p>
+                      <p className="text-sm font-bold truncate" style={{ color: 'var(--text)' }}>{entry.title}</p>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs" style={{ color: '#D4A0B0' }}>
+                        <span className="text-xs" style={{ color: 'var(--muted)' }}>
                           {format(parseISO(entry.date), 'dd MMM yyyy', { locale: es })}
                         </span>
                         <button onClick={(e) => { e.stopPropagation(); openEdit(entry); }}
-                          style={{ color: '#D4A0B0' }} className="hover:opacity-70"><Pencil size={12} /></button>
+                          style={{ color: 'var(--muted)' }} className="hover:opacity-70"><Pencil size={12} /></button>
                         <button onClick={(e) => { e.stopPropagation(); handleDelete(entry.id); }}
-                          style={{ color: '#D4A0B0' }} className="hover:opacity-70"><Trash2 size={12} /></button>
+                          style={{ color: 'var(--muted)' }} className="hover:opacity-70"><Trash2 size={12} /></button>
                       </div>
                     </div>
                     <span className="text-xs font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1"
@@ -178,7 +178,7 @@ export default function DiaryClient({ initial }: Props) {
                       <mood.Icon size={10} /> {mood.label}
                     </span>
                     {selected?.id === entry.id && (
-                      <p className="text-sm mt-3 leading-relaxed whitespace-pre-wrap" style={{ color: '#4a2030' }}>
+                      <p className="text-sm mt-3 leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--text-soft)' }}>
                         {entry.content}
                       </p>
                     )}
@@ -193,32 +193,31 @@ export default function DiaryClient({ initial }: Props) {
       {/* Modal */}
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(125,48,80,0.15)' }}>
-          <div style={{ background: '#fff', border: `1px solid ${BORDER}`, maxHeight: '90vh' }}
+          style={{ background: 'var(--overlay)' }}>
+          <div style={{ background: 'var(--card)', border: `1px solid ${BORDER}`, maxHeight: '90vh' }}
             className="rounded-2xl shadow-xl w-full max-w-lg flex flex-col">
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${BORDER}` }}>
               <h3 className="text-base font-bold" style={{ color: PINK }}>
                 {editId ? 'Editar entrada' : 'Nueva entrada'}
               </h3>
-              <button onClick={closeModal} style={{ color: '#D4A0B0' }} className="hover:opacity-70"><X size={18} /></button>
+              <button onClick={closeModal} style={{ color: 'var(--muted)' }} className="hover:opacity-70"><X size={18} /></button>
             </div>
 
             <div className="overflow-y-auto flex-1 px-6 py-4 space-y-4">
-              {/* Mood */}
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-2 block" style={{ color: '#D4A0B0' }}>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-2 block" style={{ color: 'var(--muted)' }}>
                   Como fue tu dia?
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {MOODS.map((m) => (
                     <button key={m.value} onClick={() => setForm({ ...form, mood: m.value })}
                       style={{
-                        background: form.mood === m.value ? m.bg : '#fff7f9',
+                        background: form.mood === m.value ? m.bg : 'var(--btn-inactive)',
                         border: `2px solid ${form.mood === m.value ? m.color : BORDER}`,
                       }}
                       className="flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all">
-                      <m.Icon size={20} style={{ color: form.mood === m.value ? m.color : '#D4A0B0' }} />
-                      <span className="text-xs font-semibold" style={{ color: form.mood === m.value ? m.color : '#D4A0B0' }}>
+                      <m.Icon size={20} style={{ color: form.mood === m.value ? m.color : 'var(--muted)' }} />
+                      <span className="text-xs font-semibold" style={{ color: form.mood === m.value ? m.color : 'var(--muted)' }}>
                         {m.label}
                       </span>
                     </button>
@@ -227,25 +226,25 @@ export default function DiaryClient({ initial }: Props) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Fecha</label>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Fecha</label>
                 <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })}
-                  style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Titulo *</label>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Titulo *</label>
                 <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}
                   placeholder="Que paso hoy?"
-                  style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Tu dia *</label>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Tu dia *</label>
                 <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })}
                   rows={6} placeholder="Cuentame todo..."
-                  style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white resize-none" />
               </div>
             </div>
@@ -257,10 +256,10 @@ export default function DiaryClient({ initial }: Props) {
             )}
             <div className="flex gap-2 px-6 py-4" style={{ borderTop: `1px solid ${BORDER}` }}>
               <button onClick={closeModal}
-                style={{ border: `1px solid ${BORDER}`, color: '#D4A0B0' }}
+                style={{ border: `1px solid ${BORDER}`, color: 'var(--muted)' }}
                 className="flex-1 py-2 rounded-xl text-sm font-semibold hover:opacity-70">Cancelar</button>
               <button onClick={handleSave} disabled={saving || !form.title.trim() || !form.content.trim()}
-                style={{ background: '#FFD6E0', color: PINK, border: '1px solid #f5b8cc' }}
+                style={{ background: 'var(--pink-bg)', color: PINK, border: '1px solid var(--pink-border)' }}
                 className="flex-1 py-2 rounded-xl text-sm font-semibold disabled:opacity-50 hover:opacity-80 transition-opacity">
                 {saving ? 'Guardando...' : editId ? 'Guardar' : 'Agregar'}
               </button>

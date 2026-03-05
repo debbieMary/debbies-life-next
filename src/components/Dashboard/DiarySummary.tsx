@@ -5,9 +5,6 @@ import { MOODS } from '@/components/Diary/DiaryClient';
 import Link from 'next/link';
 import { BookHeart } from 'lucide-react';
 
-const PINK   = '#7D3050';
-const BORDER = '#fce8ee';
-
 interface Props {
   entries:  DiaryEntry[];
   dateFrom: string;
@@ -25,14 +22,14 @@ export default function DiarySummary({ entries, dateFrom, dateTo }: Props) {
   })).filter((m) => m.count > 0);
 
   return (
-    <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl shadow-sm p-5">
+    <div style={{ background: 'var(--card)', border: '1px solid var(--border)' }} className="rounded-2xl shadow-sm p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <BookHeart size={15} style={{ color: '#D4A0B0' }} />
-          <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#D4A0B0' }}>Mi Diario</h3>
+          <BookHeart size={15} style={{ color: 'var(--muted)' }} />
+          <h3 className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>Mi Diario</h3>
         </div>
         <Link href="/diary"
-          style={{ color: PINK, border: `1px solid ${BORDER}` }}
+          style={{ color: 'var(--pink)', border: '1px solid var(--border)' }}
           className="text-xs font-semibold px-3 py-1 rounded-lg hover:opacity-70 transition-opacity">
           Ver todo
         </Link>
@@ -40,12 +37,12 @@ export default function DiarySummary({ entries, dateFrom, dateTo }: Props) {
 
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-6 gap-3">
-          <BookHeart size={32} style={{ color: '#D4A0B0', opacity: 0.3 }} />
-          <p className="text-sm" style={{ color: '#D4A0B0' }}>Sin entradas en este periodo</p>
+          <BookHeart size={32} style={{ color: 'var(--muted)', opacity: 0.3 }} />
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>Sin entradas en este periodo</p>
         </div>
       ) : (
         <div>
-          <p className="text-xs mb-3" style={{ color: '#D4A0B0' }}>
+          <p className="text-xs mb-3" style={{ color: 'var(--muted)' }}>
             {filtered.length} entrada{filtered.length !== 1 ? 's' : ''}
           </p>
           <div className="flex flex-wrap gap-2">

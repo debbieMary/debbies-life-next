@@ -8,8 +8,6 @@ const fmtUSD = (n: number) =>
 const fmtBOB = (n: number) =>
   `Bs. ${n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-const BORDER = '#fce8ee';
-
 interface Props {
   transactions: Transaction[];
   goals:        Goal[];
@@ -19,15 +17,13 @@ interface Props {
 export default function StatsCards({ transactions, goals, currentRate }: Props) {
   const incomeUSD   = transactions.filter(t => t.type === 'ingreso' && t.currency === 'USD').reduce((s, t) => s + t.amount, 0);
   const expensesUSD = transactions.filter(t => t.type === 'gasto'   && t.currency === 'USD').reduce((s, t) => s + t.amount, 0);
-  const balanceUSD  = incomeUSD - expensesUSD;
 
   const incomeBOB   = transactions.filter(t => t.type === 'ingreso' && t.currency === 'BOB').reduce((s, t) => s + t.amount, 0);
   const expensesBOB = transactions.filter(t => t.type === 'gasto'   && t.currency === 'BOB').reduce((s, t) => s + t.amount, 0);
-  const balanceBOB  = incomeBOB - expensesBOB;
 
   const walletRow = (label: string, val: string, color: string, bg: string, bold = false) => (
     <div key={label} className="flex items-center justify-between">
-      <span className="text-xs font-medium" style={{ color: '#D4A0B0' }}>{label}</span>
+      <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>{label}</span>
       <span className={`text-xs tabular-nums px-2 py-0.5 rounded-lg ${bold ? 'font-bold' : 'font-semibold'}`}
         style={{ color, background: bg }}>
         {val}
@@ -37,8 +33,8 @@ export default function StatsCards({ transactions, goals, currentRate }: Props) 
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-      <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl p-4 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5" style={{ color: '#D4A0B0' }}>
+      <div style={{ background: 'var(--card)', border: '1px solid var(--border)' }} className="rounded-2xl p-4 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5" style={{ color: 'var(--muted)' }}>
           <DollarSign size={12} /> Saldo USD
         </p>
         <div className="space-y-1.5">
@@ -47,8 +43,8 @@ export default function StatsCards({ transactions, goals, currentRate }: Props) 
         </div>
       </div>
 
-      <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl p-4 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5" style={{ color: '#D4A0B0' }}>
+      <div style={{ background: 'var(--card)', border: '1px solid var(--border)' }} className="rounded-2xl p-4 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-1.5" style={{ color: 'var(--muted)' }}>
           <Banknote size={12} /> Saldo BOB
         </p>
         <div className="space-y-1.5">

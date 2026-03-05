@@ -1,29 +1,137 @@
 @import "tailwindcss";
 
+/* ── CSS variables: light & dark ────────────────────────── */
+:root {
+  --bg:            #fff7f9;
+  --card:          #ffffff;
+  --pink:          #7D3050;
+  --border:        #fce8ee;
+  --muted:         #D4A0B0;
+  --muted-2:       #E0B8C4;
+  --text:          #2a1520;
+  --text-soft:     #4a2030;
+  --pink-bg:       #FFD6E0;
+  --pink-border:   #f5b8cc;
+  --btn-inactive:  #fff7f9;
+  --hover:         #fff0f5;
+  --table-header:  #fff7f9;
+  --overlay:       rgba(125,48,80,0.15);
+  --active-link:   rgba(125,48,80,0.10);
+  --input:         #ffffff;
+  --popover-shadow: 0 8px 24px rgba(125,48,80,0.15);
+  /* semantic text colors (for text on neutral/card bg) */
+  --green-fg:  #065f46;
+  --red-fg:    #991b1b;
+  /* semantic colored card backgrounds */
+  --c-green:    #d1fae5; --c-green-br:    #6ee7b7;
+  --c-red:      #fee2e2; --c-red-br:      #fca5a5;
+  --c-green-lt: #f0fdf4; --c-green-lt-br: #bbf7d0;
+  --c-red-lt:   #fef2f2; --c-red-lt-br:   #fecaca;
+  --c-rose:     #fce7f3; --c-rose-br:     #f9a8d4;
+  /* period card colors */
+  --pc-lav-bg:       #F5F3FF; --pc-lav-border:  #DDD6FE; --pc-lav-text:   #7C3AED;
+  --pc-teal-bg:      #CCFBF1; --pc-teal-border: #99F6E4; --pc-teal-text:  #0F766E;
+  --pc-peach-bg:     #FEF9C3; --pc-peach-border:#FDE68A; --pc-peach-text: #A16207;
+  --pc-pink-bg:      #FFE4EE; --pc-pink-border: #FFBDD6; --pc-pink-text:  #E8739A;
+}
+
+[data-theme="dark"] {
+  --bg:            #4e4e56;
+  --card:          #5a5a62;
+  --pink:          #ffd6eb;
+  --border:        #6a6872;
+  --muted:         #d8d0d8;
+  --muted-2:       #c0b8c8;
+  --text:          #f5f0f5;
+  --text-soft:     #e8e0e8;
+  --pink-bg:       #5a4858;
+  --pink-border:   #9a7090;
+  --btn-inactive:  #5a5a62;
+  --hover:         #686870;
+  --table-header:  #464650;
+  --overlay:       rgba(0,0,0,0.45);
+  --active-link:   rgba(245,184,208,0.15);
+  --input:         #42424a;
+  --popover-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  /* semantic text colors (lighter for dark bg) */
+  --green-fg:  #34d399;
+  --red-fg:    #f87171;
+  /* semantic colored card backgrounds — darkened for dark mode */
+  --c-green:    #064e3b; --c-green-br:    #166534;
+  --c-red:      #450a0a; --c-red-br:      #7f1d1d;
+  --c-green-lt: #064e3b; --c-green-lt-br: #166534;
+  --c-red-lt:   #450a0a; --c-red-lt-br:   #7f1d1d;
+  --c-rose:     #4a0520; --c-rose-br:     #831843;
+  /* period card colors */
+  --pc-lav-bg:       #a8a5c0; --pc-lav-border:  #7870a0; --pc-lav-text:   #1e0858;
+  --pc-teal-bg:      #80b8b0; --pc-teal-border: #509890; --pc-teal-text:  #e0faf5;
+  --pc-peach-bg:     #b8b478; --pc-peach-border:#989040; --pc-peach-text: #fff8d0;
+  --pc-pink-bg:      #b890a0; --pc-pink-border: #986880; --pc-pink-text:  #ffe0f0;
+}
+
 body {
-  background: #fff7f9;
-  color: #2a1520;
+  background: var(--bg);
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Scrollbar ───────────────────────────────────────────── */
 * {
   scrollbar-width: thin;
   scrollbar-color: #f5c6d0 transparent;
 }
+[data-theme="dark"] * {
+  scrollbar-color: #7a3050 transparent;
+}
 *::-webkit-scrollbar { width: 6px; }
 *::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb { background: #f5c6d0; border-radius: 3px; }
+[data-theme="dark"] *::-webkit-scrollbar-thumb { background: #7a3050; }
 
-/* Cards con sombra suave rosada */
+/* ── Shadows ─────────────────────────────────────────────── */
 .shadow-sm {
   box-shadow:
     0 2px 8px rgba(125, 48, 80, 0.07),
     0 1px 3px rgba(125, 48, 80, 0.04) !important;
 }
+[data-theme="dark"] .shadow-sm {
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.35),
+    0 1px 3px rgba(0,0,0,0.2) !important;
+}
 
+/* ── Dark mode: form elements ────────────────────────────── */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background-color: var(--input) !important;
+  color: var(--text) !important;
+}
+
+/* ── Dark mode: table dividers ───────────────────────────── */
+[data-theme="dark"] .divide-y > * + * {
+  border-color: var(--border) !important;
+}
+
+/* ── Dark mode: row hover ────────────────────────────────── */
+[data-theme="dark"] .hover\:bg-pink-50:hover {
+  background-color: var(--hover) !important;
+}
+
+/* ── Light colored cards: override text vars to stay dark in dark mode ── */
+[data-theme="dark"] .light-card {
+  --text:      #1a1520;
+  --text-soft: #3a2030;
+  --muted:     #475569;
+}
+
+/* ── Date picker ─────────────────────────────────────────── */
 input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
 input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+
+/* ── Number inputs ───────────────────────────────────────── */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }

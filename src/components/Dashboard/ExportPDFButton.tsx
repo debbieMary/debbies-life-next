@@ -7,8 +7,8 @@ import { exportReportPDF, ReportPeriod } from '@/lib/exportPDF';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const PINK   = '#7D3050';
-const BORDER = '#fce8ee';
+const PINK   = 'var(--pink)';
+const BORDER = 'var(--border)';
 
 interface Props {
   transactions:  Transaction[];
@@ -87,7 +87,7 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
     <>
       <button
         onClick={() => setOpen(true)}
-        style={{ background: '#FFD6E0', color: PINK, border: '1px solid #f5b8cc' }}
+        style={{ background: 'var(--pink-bg)', color: PINK, border: '1px solid var(--pink-border)' }}
         className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold hover:opacity-80 transition-opacity shadow-sm"
       >
         <FileDown size={16} />
@@ -96,8 +96,8 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(125,48,80,0.15)' }}>
-          <div style={{ background: '#fff', border: `1px solid ${BORDER}` }}
+          style={{ background: 'var(--overlay)' }}>
+          <div style={{ background: 'var(--card)', border: `1px solid ${BORDER}` }}
             className="rounded-2xl shadow-xl w-full max-w-sm p-6">
 
             {/* Header */}
@@ -106,7 +106,7 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
                 <FileDown size={18} style={{ color: PINK }} />
                 <h3 className="text-base font-bold" style={{ color: PINK }}>Exportar Reporte PDF</h3>
               </div>
-              <button onClick={() => setOpen(false)} style={{ color: '#D4A0B0' }} className="hover:opacity-70">
+              <button onClick={() => setOpen(false)} style={{ color: 'var(--muted)' }} className="hover:opacity-70">
                 <X size={18} />
               </button>
             </div>
@@ -116,9 +116,9 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
               <button
                 onClick={() => setMode('month')}
                 style={{
-                  background: mode === 'month' ? '#FFD6E0' : '#fff7f9',
+                  background: mode === 'month' ? 'var(--pink-bg)' : 'var(--btn-inactive)',
                   color: PINK,
-                  border: `1px solid ${mode === 'month' ? '#f5b8cc' : BORDER}`,
+                  border: `1px solid ${mode === 'month' ? 'var(--pink-border)' : BORDER}`,
                 }}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-sm font-semibold transition-all"
               >
@@ -128,9 +128,9 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
               <button
                 onClick={() => setMode('range')}
                 style={{
-                  background: mode === 'range' ? '#FFD6E0' : '#fff7f9',
+                  background: mode === 'range' ? 'var(--pink-bg)' : 'var(--btn-inactive)',
                   color: PINK,
-                  border: `1px solid ${mode === 'range' ? '#f5b8cc' : BORDER}`,
+                  border: `1px solid ${mode === 'range' ? 'var(--pink-border)' : BORDER}`,
                 }}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-sm font-semibold transition-all"
               >
@@ -143,14 +143,14 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
             {mode === 'month' && (
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Mes</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Mes</label>
                   <div className="grid grid-cols-3 gap-1.5">
                     {MONTHS.map((m, i) => (
                       <button key={m} onClick={() => setSelectedMonth(i)}
                         style={{
-                          background: selectedMonth === i ? '#FFD6E0' : '#fff7f9',
+                          background: selectedMonth === i ? 'var(--pink-bg)' : 'var(--btn-inactive)',
                           color: PINK,
-                          border: `1px solid ${selectedMonth === i ? '#f5b8cc' : BORDER}`,
+                          border: `1px solid ${selectedMonth === i ? 'var(--pink-border)' : BORDER}`,
                         }}
                         className="py-1.5 rounded-lg text-xs font-medium transition-all">
                         {m.slice(0, 3)}
@@ -159,19 +159,19 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Año</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Año</label>
                   <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(Number(e.target.value))}
-                    style={{ border: `1px solid ${BORDER}`, color: PINK }}
-                    className="w-full px-3 py-2 rounded-xl text-sm font-semibold bg-white outline-none focus:ring-2 focus:ring-pink-200"
+                    style={{ border: `1px solid ${BORDER}`, color: PINK, background: 'var(--input)' }}
+                    className="w-full px-3 py-2 rounded-xl text-sm font-semibold outline-none focus:ring-2 focus:ring-pink-200"
                   >
                     {years.map((y) => (
                       <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
                 </div>
-                <p className="text-xs text-center" style={{ color: '#D4A0B0' }}>
+                <p className="text-xs text-center" style={{ color: 'var(--muted)' }}>
                   Período: {MONTHS[selectedMonth]} {selectedYear}
                 </p>
               </div>
@@ -181,15 +181,15 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
             {mode === 'range' && (
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Desde</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Desde</label>
                   <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
-                    style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                    style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                     className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Hasta</label>
+                  <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Hasta</label>
                   <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
-                    style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                    style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                     className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
                 </div>
                 {!isRangeValid && (
@@ -201,14 +201,14 @@ export default function ExportPDFButton({ transactions, goals, goalActions, rate
             {/* Actions */}
             <div className="flex gap-2 mt-6">
               <button onClick={() => setOpen(false)}
-                style={{ border: `1px solid ${BORDER}`, color: '#D4A0B0' }}
+                style={{ border: `1px solid ${BORDER}`, color: 'var(--muted)' }}
                 className="flex-1 py-2 rounded-xl text-sm font-semibold hover:opacity-70">
                 Cancelar
               </button>
               <button
                 onClick={handleExport}
                 disabled={loading || !isRangeValid}
-                style={{ background: '#FFD6E0', color: PINK, border: '1px solid #f5b8cc' }}
+                style={{ background: 'var(--pink-bg)', color: PINK, border: '1px solid var(--pink-border)' }}
                 className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold disabled:opacity-50 hover:opacity-80 transition-opacity"
               >
                 <FileDown size={14} />

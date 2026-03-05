@@ -3,7 +3,6 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Goal, GoalAction } from '@/types';
 
-const BORDER  = '#fce8ee';
 const PALETTE = ['#f9a8d4','#a5b4fc','#86efac','#fca5a5','#fcd34d','#6ee7b7','#c4b5fd','#fdba74'];
 
 interface Props {
@@ -33,11 +32,11 @@ export default function GoalsByCategoryChart({ goals, goalActions, dateFrom, dat
   const malas  = filtered.filter((a) => a.type === 'mala').length;
 
   return (
-    <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl shadow-sm p-5 mb-5">
-      <h3 className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#D4A0B0' }}>
+    <div style={{ background: 'var(--card)', border: '1px solid var(--border)' }} className="rounded-2xl shadow-sm p-5 mb-5">
+      <h3 className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--muted)' }}>
         Acciones de objetivos
       </h3>
-      <p className="text-xs mb-4" style={{ color: '#E0B8C4' }}>
+      <p className="text-xs mb-4" style={{ color: 'var(--muted-2)' }}>
         {total} accion{total !== 1 ? 'es' : ''} en el período
       </p>
 
@@ -52,9 +51,9 @@ export default function GoalsByCategoryChart({ goals, goalActions, dateFrom, dat
               </Pie>
               <Tooltip
                 formatter={(value, name) => [value, name]}
-                contentStyle={{ border: '1px solid #fce8ee', borderRadius: 12, fontSize: 12 }}
+                contentStyle={{ border: '1px solid var(--border)', borderRadius: 12, fontSize: 12, background: 'var(--card)', color: 'var(--text)' }}
               />
-              <Legend wrapperStyle={{ fontSize: 11, color: '#D4A0B0' }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: 'var(--muted)' }} />
             </PieChart>
           </ResponsiveContainer>
 
@@ -73,7 +72,7 @@ export default function GoalsByCategoryChart({ goals, goalActions, dateFrom, dat
         </>
       ) : (
         <div className="flex items-center justify-center h-[200px]">
-          <p className="text-sm" style={{ color: '#D4A0B0' }}>Sin acciones en este período</p>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>Sin acciones en este período</p>
         </div>
       )}
     </div>

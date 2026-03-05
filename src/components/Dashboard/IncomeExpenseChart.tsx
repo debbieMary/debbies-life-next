@@ -5,8 +5,6 @@ import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Transaction } from '@/types';
 
-const BORDER = '#fce8ee';
-
 interface Props {
   transactions: Transaction[];
   dateFrom?: string;
@@ -32,24 +30,24 @@ export default function IncomeExpenseChart({ transactions, dateFrom, dateTo }: P
     : 'Todo el tiempo';
 
   return (
-    <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl shadow-sm p-5 mb-5">
-      <h3 className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#D4A0B0' }}>
+    <div style={{ background: 'var(--card)', border: '1px solid var(--border)' }} className="rounded-2xl shadow-sm p-5 mb-5">
+      <h3 className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--muted)' }}>
         Ingresos vs Gastos
       </h3>
-      <p className="text-xs mb-4" style={{ color: '#E0B8C4' }}>{subtitle}</p>
+      <p className="text-xs mb-4" style={{ color: 'var(--muted-2)' }}>{subtitle}</p>
 
       {transactions.length > 0 ? (
         <>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={data} margin={{ top: 28, right: 8, left: -14, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
-              <XAxis dataKey="periodo" tick={{ fontSize: 10, fill: '#D4A0B0' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: '#D4A0B0' }} axisLine={false} tickLine={false}
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="periodo" tick={{ fontSize: 10, fill: 'var(--muted)' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 10, fill: 'var(--muted)' }} axisLine={false} tickLine={false}
                 tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(v)} />
               <Tooltip formatter={(v: any, name: string | undefined) => [
                 name?.includes('$') ? fmtUSD(v) : fmtBOB(v), name
-              ]} contentStyle={{ border: `1px solid ${BORDER}`, borderRadius: 12, fontSize: 12 }} />
-              <Legend wrapperStyle={{ fontSize: 11, color: '#D4A0B0' }} />
+              ]} contentStyle={{ border: '1px solid var(--border)', borderRadius: 12, fontSize: 12, background: 'var(--card)', color: 'var(--text)' }} />
+              <Legend wrapperStyle={{ fontSize: 11, color: 'var(--muted)' }} />
               <Bar dataKey="ingresoUSD" name="Ingresos $"  fill="#86efac" radius={[4,4,0,0]} maxBarSize={40}>
                 <LabelList dataKey="ingresoUSD" position="top" formatter={(v: any) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#065f46', fontWeight: 700 }} />
               </Bar>
@@ -65,18 +63,17 @@ export default function IncomeExpenseChart({ transactions, dateFrom, dateTo }: P
             </BarChart>
           </ResponsiveContainer>
 
-          {/* Balance */}
           <div className="flex gap-3 mt-4">
             <div className="flex-1 flex items-center justify-between px-3 py-2 rounded-xl"
               style={{ background: balanceUSD >= 0 ? '#ede9fe' : '#fff7ed', border: `1px solid ${balanceUSD >= 0 ? '#c4b5fd' : '#fdba74'}` }}>
-              <span className="text-xs font-medium" style={{ color: '#D4A0B0' }}>Balance $</span>
+              <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Balance $</span>
               <span className="text-sm font-bold tabular-nums" style={{ color: balanceUSD >= 0 ? '#5b21b6' : '#9a3412' }}>
                 {balanceUSD >= 0 ? '+' : ''}{fmtUSD(balanceUSD)}
               </span>
             </div>
             <div className="flex-1 flex items-center justify-between px-3 py-2 rounded-xl"
               style={{ background: balanceBOB >= 0 ? '#ede9fe' : '#fff7ed', border: `1px solid ${balanceBOB >= 0 ? '#c4b5fd' : '#fdba74'}` }}>
-              <span className="text-xs font-medium" style={{ color: '#D4A0B0' }}>Balance Bs</span>
+              <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Balance Bs</span>
               <span className="text-sm font-bold tabular-nums" style={{ color: balanceBOB >= 0 ? '#5b21b6' : '#9a3412' }}>
                 {balanceBOB >= 0 ? '+' : ''}{fmtBOB(balanceBOB)}
               </span>
@@ -85,7 +82,7 @@ export default function IncomeExpenseChart({ transactions, dateFrom, dateTo }: P
         </>
       ) : (
         <div className="flex items-center justify-center h-[200px]">
-          <p className="text-sm" style={{ color: '#D4A0B0' }}>Sin datos en este período</p>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>Sin datos en este período</p>
         </div>
       )}
     </div>

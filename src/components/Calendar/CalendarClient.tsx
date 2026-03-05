@@ -7,8 +7,8 @@ import { es } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Target, X, TrendingUp, TrendingDown, Scale, ThumbsUp, ThumbsDown, Droplets, Sparkles } from 'lucide-react';
 import { MOODS } from '@/components/Diary/DiaryClient';
 
-const PINK   = '#7D3050';
-const BORDER = '#fce8ee';
+const PINK   = 'var(--pink)';
+const BORDER = 'var(--border)';
 
 const DAYS   = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -118,7 +118,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
       {/* Day labels */}
       <div className="grid grid-cols-7 mb-2">
         {DAYS.map((d) => (
-          <div key={d} className="text-center text-xs font-semibold uppercase tracking-wider py-2" style={{ color: '#D4A0B0' }}>
+          <div key={d} className="text-center text-xs font-semibold uppercase tracking-wider py-2" style={{ color: 'var(--muted)' }}>
             {d}
           </div>
         ))}
@@ -128,7 +128,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
       <div style={{ border: `1px solid ${BORDER}` }} className="rounded-2xl overflow-hidden">
         <div className="grid grid-cols-7">
           {Array.from({ length: firstDay }).map((_, i) => (
-            <div key={`empty-${i}`} style={{ background: '#fff7f9', borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }} className="min-h-[80px]" />
+            <div key={`empty-${i}`} style={{ background: 'var(--bg)', borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }} className="min-h-[80px]" />
           ))}
 
           {Array.from({ length: daysInMonth }).map((_, i) => {
@@ -144,7 +144,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               <div key={day}
                 onClick={() => setSelected(new Date(year, month, day))}
                 style={{
-                  background: isSelected ? '#FFD6E0' : '#fff',
+                  background: isSelected ? 'var(--pink-bg)' : 'var(--card)',
                   borderRight: `1px solid ${BORDER}`,
                   borderBottom: `1px solid ${BORDER}`,
                   cursor: 'pointer',
@@ -152,7 +152,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
                 className="min-h-[56px] sm:min-h-[80px] p-1 sm:p-2 hover:bg-pink-50 transition-colors">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full"
-                    style={{ background: isToday ? PINK : 'transparent', color: isToday ? '#fff' : '#2a1520' }}>
+                    style={{ background: isToday ? PINK : 'transparent', color: isToday ? 'var(--card)' : 'var(--text)' }}>
                     {day}
                   </span>
                   {period && <Droplets size={13} style={{ color: '#F472B6' }} />}
@@ -176,7 +176,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
                     <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0' }}
                       className="text-xs px-1.5 py-0.5 rounded-md font-medium flex items-center gap-1.5">
                       {ingresoCount > 0 && <span className="flex items-center gap-0.5" style={{ color: '#065f46' }}><TrendingUp size={9} />{ingresoCount}</span>}
-                      {ingresoCount > 0 && gastoCount > 0 && <span style={{ color: '#D4A0B0' }}>·</span>}
+                      {ingresoCount > 0 && gastoCount > 0 && <span style={{ color: 'var(--muted)' }}>·</span>}
                       {gastoCount   > 0 && <span className="flex items-center gap-0.5" style={{ color: '#991b1b' }}><TrendingDown size={9} />{gastoCount}</span>}
                     </div>
                   )}
@@ -200,7 +200,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
                       <div style={{ background: '#fff7f9', border: `1px solid ${BORDER}` }}
                         className="flex items-center gap-1.5 text-xs px-1.5 py-0.5 rounded-md font-medium">
                         {good > 0 && <span className="flex items-center gap-0.5" style={{ color: '#065f46' }}><ThumbsUp size={9} />{good}</span>}
-                        {good > 0 && bad > 0 && <span style={{ color: '#D4A0B0' }}>·</span>}
+                        {good > 0 && bad > 0 && <span style={{ color: 'var(--muted)' }}>·</span>}
                         {bad  > 0 && <span className="flex items-center gap-0.5" style={{ color: '#991b1b' }}><ThumbsDown size={9} />{bad}</span>}
                       </div>
                     );
@@ -222,9 +222,9 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
       {/* Day detail modal */}
       {selected && hasEvents && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(125,48,80,0.18)' }}
+          style={{ background: 'var(--overlay)' }}
           onClick={() => setSelected(null)}>
-          <div style={{ background: '#fff', border: `1px solid ${BORDER}`, maxHeight: '85vh' }}
+          <div style={{ background: 'var(--card)', border: `1px solid ${BORDER}`, maxHeight: '85vh' }}
             className="rounded-2xl shadow-xl w-full max-w-md flex flex-col"
             onClick={(e) => e.stopPropagation()}>
 
@@ -233,7 +233,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               <h3 className="text-base font-bold capitalize" style={{ color: PINK }}>
                 {format(selected, "EEEE d 'de' MMMM yyyy", { locale: es })}
               </h3>
-              <button onClick={() => setSelected(null)} style={{ color: '#D4A0B0' }} className="hover:opacity-70">
+              <button onClick={() => setSelected(null)} style={{ color: 'var(--muted)' }} className="hover:opacity-70">
                 <X size={18} />
               </button>
             </div>
@@ -244,7 +244,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               {/* Ciclo */}
               {(selEvents!.period || selEvents!.ovul) && (
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#D4A0B0' }}>Ciclo</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--muted)' }}>Ciclo</p>
                   <div className="space-y-2">
                     {selEvents!.period && (
                       <div style={{ background: '#FFE4EE', border: '1px solid #FFBDD6' }} className="rounded-xl px-3 py-2.5 flex items-center gap-2">
@@ -265,19 +265,19 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               {/* Diario */}
               {selEvents!.diary.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#D4A0B0' }}>Diario</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--muted)' }}>Diario</p>
                   <div className="space-y-2">
                     {selEvents!.diary.map((d) => {
                       const mood = MOODS.find(m => m.value === d.mood)!;
                       return (
                         <div key={d.id} style={{ background: mood.bg, border: `1px solid ${mood.color}30` }}
-                          className="rounded-xl px-3 py-2.5">
+                          className="light-card rounded-xl px-3 py-2.5">
                           <div className="flex items-center gap-2 mb-1">
                             <mood.Icon size={14} style={{ color: mood.color }} />
-                            <p className="text-sm font-semibold" style={{ color: '#2a1520' }}>{d.title}</p>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{d.title}</p>
                             <span className="text-xs font-semibold ml-auto" style={{ color: mood.color }}>{mood.label}</span>
                           </div>
-                          <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: '#4a2030' }}>{d.content}</p>
+                          <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--text-soft)' }}>{d.content}</p>
                         </div>
                       );
                     })}
@@ -288,7 +288,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               {/* Peso */}
               {selEvents!.wts.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#D4A0B0' }}>Peso</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--muted)' }}>Peso</p>
                   <div className="space-y-2">
                     {selEvents!.wts.map((w) => (
                       <div key={w.id}
@@ -306,7 +306,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               {/* Movimientos */}
               {selEvents!.txs.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#D4A0B0' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--muted)' }}>
                     Movimientos ({selEvents!.txs.length})
                   </p>
                   <div className="space-y-2">
@@ -316,15 +316,15 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
                           background: t.type === 'ingreso' ? '#f0fdf4' : '#fef2f2',
                           border: `1px solid ${t.type === 'ingreso' ? '#bbf7d0' : '#fecaca'}`,
                         }}
-                        className="rounded-xl px-3 py-2.5 flex items-start justify-between gap-3">
+                        className="light-card rounded-xl px-3 py-2.5 flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-0.5">
                             {t.type === 'ingreso'
                               ? <TrendingUp size={12} style={{ color: '#065f46' }} />
                               : <TrendingDown size={12} style={{ color: '#991b1b' }} />}
-                            <p className="text-xs font-semibold truncate" style={{ color: '#2a1520' }}>{t.description}</p>
+                            <p className="text-xs font-semibold truncate" style={{ color: 'var(--text)' }}>{t.description}</p>
                           </div>
-                          <p className="text-xs" style={{ color: '#D4A0B0' }}>{t.category}</p>
+                          <p className="text-xs" style={{ color: 'var(--muted)' }}>{t.category}</p>
                         </div>
                         <span className="text-sm font-bold tabular-nums shrink-0"
                           style={{ color: t.type === 'ingreso' ? '#065f46' : '#991b1b' }}>
@@ -339,17 +339,17 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               {/* Objetivos (fecha meta) */}
               {selEvents!.gls.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#D4A0B0' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--muted)' }}>
                     Objetivos — fecha meta ({selEvents!.gls.length})
                   </p>
                   <div className="space-y-2">
                     {selEvents!.gls.map((g) => (
                       <div key={g.id}
                         style={{ background: '#fdf2f8', border: `1px solid ${BORDER}` }}
-                        className="rounded-xl px-3 py-2.5 flex items-center gap-2">
+                        className="light-card rounded-xl px-3 py-2.5 flex items-center gap-2">
                         <Target size={14} style={{ color: g.completed ? '#16a34a' : PINK }} />
                         <div>
-                          <p className="text-sm font-semibold" style={{ color: '#2a1520' }}>{g.title}</p>
+                          <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>{g.title}</p>
                           {g.completed && <p className="text-xs" style={{ color: '#16a34a' }}>Completado</p>}
                         </div>
                       </div>
@@ -361,7 +361,7 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
               {/* Acciones de objetivos */}
               {selEvents!.acts.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#D4A0B0' }}>
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--muted)' }}>
                     Acciones de objetivos ({selEvents!.acts.length})
                   </p>
                   <div className="space-y-2">
@@ -371,15 +371,15 @@ export default function CalendarClient({ transactions, goals, goalActions, weigh
                           background: a.type === 'buena' ? '#f0fdf4' : '#fef2f2',
                           border: `1px solid ${a.type === 'buena' ? '#bbf7d0' : '#fecaca'}`,
                         }}
-                        className="rounded-xl px-3 py-2.5 flex items-start justify-between gap-3">
+                        className="light-card rounded-xl px-3 py-2.5 flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 mb-0.5">
                             {a.type === 'buena'
                               ? <ThumbsUp size={12} style={{ color: '#16a34a' }} />
                               : <ThumbsDown size={12} style={{ color: '#dc2626' }} />}
-                            <p className="text-xs font-semibold truncate" style={{ color: '#2a1520' }}>{a.title}</p>
+                            <p className="text-xs font-semibold truncate" style={{ color: 'var(--text)' }}>{a.title}</p>
                           </div>
-                          <p className="text-xs" style={{ color: '#D4A0B0' }}>
+                          <p className="text-xs" style={{ color: 'var(--muted)' }}>
                             {goalTitle(a.goal_id)}
                             {a.action_time && ` · ${a.action_time.slice(0, 5)}`}
                           </p>

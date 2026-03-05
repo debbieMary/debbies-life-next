@@ -11,15 +11,15 @@ import {
   ThumbsUp, ThumbsDown, CalendarDays,
 } from 'lucide-react';
 
-const PINK   = '#7D3050';
-const BORDER = '#fce8ee';
+const PINK   = 'var(--pink)';
+const BORDER = 'var(--border)';
 
 const CATEGORIES: { value: GoalCategory; label: string; Icon: any; color: string; iconColor: string }[] = [
   { value: 'influencer',   label: 'Influencer',   Icon: Star,     color: '#fce7f3', iconColor: '#be185d' },
   { value: 'programadora', label: 'Programadora', Icon: Laptop2,  color: '#ede9fe', iconColor: '#6d28d9' },
   { value: 'spa',          label: 'Mi Spa',       Icon: Flower2,  color: '#dcfce7', iconColor: '#15803d' },
   { value: 'salud',        label: 'Salud',        Icon: Heart,    color: '#fee2e2', iconColor: '#dc2626' },
-  { value: 'otro',         label: 'Otro',         Icon: Sparkles, color: '#fff7f9', iconColor: PINK },
+  { value: 'otro',         label: 'Otro',         Icon: Sparkles, color: '#fff7f9', iconColor: '#7D3050' },
 ];
 
 const emptyGoalForm   = { title: '', description: '', category: 'otro' as GoalCategory, target_date: '' };
@@ -53,18 +53,15 @@ export default function GoalsClient({ initial, initialActions }: Props) {
     return dateFrom === d.toISOString().split('T')[0] && dateTo === gToday();
   };
 
-  // Goal form modal
-  const [goalOpen, setGoalOpen]   = useState(false);
-  const [goalForm, setGoalForm]   = useState(emptyGoalForm);
-  const [editGoal, setEditGoal]   = useState<Goal | null>(null);
+  const [goalOpen, setGoalOpen] = useState(false);
+  const [goalForm, setGoalForm] = useState(emptyGoalForm);
+  const [editGoal, setEditGoal] = useState<Goal | null>(null);
 
-  // Detail modal (shows goal + actions, inline action form)
-  const [detailGoal, setDetailGoal]       = useState<Goal | null>(null);
-  const [actionForm, setActionForm]       = useState(emptyActionForm);
-  const [editingAction, setEditingAction] = useState<GoalAction | null>(null);
-  const [showActionForm, setShowActionForm] = useState(false);
+  const [detailGoal, setDetailGoal]           = useState<Goal | null>(null);
+  const [actionForm, setActionForm]           = useState(emptyActionForm);
+  const [editingAction, setEditingAction]     = useState<GoalAction | null>(null);
+  const [showActionForm, setShowActionForm]   = useState(false);
 
-  // ── Goals CRUD ──────────────────────────────────────────
   const openAddGoal = () => { setGoalForm(emptyGoalForm); setEditGoal(null); setGoalOpen(true); };
 
   const openEditGoal = (goal: Goal, e: React.MouseEvent) => {
@@ -115,36 +112,25 @@ export default function GoalsClient({ initial, initialActions }: Props) {
     }
   };
 
-  // ── Actions CRUD ────────────────────────────────────────
-  const startAddAction = () => {
-    setEditingAction(null);
-    setActionForm(emptyActionForm);
-    setShowActionForm(true);
-  };
+  const startAddAction = () => { setEditingAction(null); setActionForm(emptyActionForm); setShowActionForm(true); };
 
   const startEditAction = (action: GoalAction) => {
     setEditingAction(action);
     setActionForm({
-      title: action.title,
-      type: action.type,
+      title: action.title, type: action.type,
       action_date: action.action_date ?? new Date().toISOString().split('T')[0],
       action_time: action.action_time ?? '',
     });
     setShowActionForm(true);
   };
 
-  const cancelActionForm = () => {
-    setShowActionForm(false);
-    setEditingAction(null);
-    setActionForm(emptyActionForm);
-  };
+  const cancelActionForm = () => { setShowActionForm(false); setEditingAction(null); setActionForm(emptyActionForm); };
 
   const handleSaveAction = async () => {
     if (!detailGoal || !actionForm.title.trim()) return;
     setSaving(true);
     const payload = {
-      title: actionForm.title.trim(),
-      type: actionForm.type,
+      title: actionForm.title.trim(), type: actionForm.type,
       action_date: actionForm.action_date || null,
       action_time: actionForm.action_time || null,
     };
@@ -189,24 +175,24 @@ export default function GoalsClient({ initial, initialActions }: Props) {
   return (
     <div>
       {/* Filtro de fecha */}
-      <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl p-3 mb-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div style={{ background: 'var(--card)', border: `1px solid ${BORDER}` }} className="rounded-2xl p-3 mb-4 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 flex-1 min-w-0">
             <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)}
-              style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
-              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
-            <span className="text-xs shrink-0" style={{ color: '#D4A0B0' }}>—</span>
+              style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
+              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
+            <span className="hidden sm:inline text-xs shrink-0" style={{ color: 'var(--muted)' }}>—</span>
             <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)}
-              style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
-              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
+              style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
+              className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
           </div>
           <div className="flex items-center gap-1 shrink-0">
             {[{ label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '3m', days: 90 }, { label: 'Todo', days: null }].map(({ label, days }) => (
               <button key={label} onClick={() => setPreset(days)}
                 style={{
-                  background: isPresetActive(days) ? '#FFD6E0' : '#fff7f9',
+                  background: isPresetActive(days) ? 'var(--pink-bg)' : 'var(--btn-inactive)',
                   color: PINK,
-                  border: `1px solid ${isPresetActive(days) ? '#f5b8cc' : BORDER}`,
+                  border: `1px solid ${isPresetActive(days) ? 'var(--pink-border)' : BORDER}`,
                 }}
                 className="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all">
                 {label}
@@ -214,84 +200,84 @@ export default function GoalsClient({ initial, initialActions }: Props) {
             ))}
           </div>
         </div>
-        <p className="text-xs mt-2" style={{ color: '#D4A0B0' }}>Filtra las acciones de cada objetivo por fecha</p>
+        <p className="text-xs mt-2" style={{ color: 'var(--muted)' }}>Filtra las acciones de cada objetivo por fecha</p>
       </div>
 
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-base font-semibold" style={{ color: PINK }}>Mis Objetivos</h2>
         <button onClick={openAddGoal}
-          style={{ background: '#FFD6E0', color: PINK, border: '1px solid #f5b8cc' }}
+          style={{ background: 'var(--pink-bg)', color: PINK, border: '1px solid var(--pink-border)' }}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold hover:opacity-80 transition-opacity">
           <Plus size={15} /> Agregar
         </button>
       </div>
 
       {goals.length === 0 ? (
-        <div className="text-center py-12" style={{ color: '#D4A0B0' }}>
+        <div className="text-center py-12" style={{ color: 'var(--muted)' }}>
           <Target size={40} className="mx-auto mb-3 opacity-30" />
           <p className="text-sm">Sin objetivos aún. ¡Agrega tu primero!</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
           {goals.map((goal) => {
-                    const cat         = CATEGORIES.find(c => c.value === goal.category)!;
-                    const goalActions = actionsForGoal(goal.id);
-                    const goodCount   = goalActions.filter(a => a.type === 'buena').length;
-                    const badCount    = goalActions.filter(a => a.type === 'mala').length;
-                    return (
-                      <div key={goal.id}
-                        onClick={() => { setDetailGoal(goal); setShowActionForm(false); cancelActionForm(); }}
-                        style={{ background: '#fff', border: `1px solid ${goal.completed ? '#86efac' : BORDER}`, cursor: 'pointer', flex: '1 1 280px', maxWidth: '360px' }}
-                        className="rounded-2xl shadow-sm hover:shadow-md transition-all p-4">
+            const cat         = CATEGORIES.find(c => c.value === goal.category)!;
+            const goalActions = actionsForGoal(goal.id);
+            const goodCount   = goalActions.filter(a => a.type === 'buena').length;
+            const badCount    = goalActions.filter(a => a.type === 'mala').length;
+            return (
+              <div key={goal.id}
+                onClick={() => { setDetailGoal(goal); setShowActionForm(false); cancelActionForm(); }}
+                style={{ background: 'var(--card)', border: `1px solid ${goal.completed ? '#86efac' : BORDER}`, cursor: 'pointer', flex: '1 1 280px', maxWidth: '360px' }}
+                className="rounded-2xl shadow-sm hover:shadow-md transition-all p-4">
 
-                        <div className="flex items-start gap-2 mb-2">
-                          <button onClick={(e) => handleToggleGoal(goal, e)} className="mt-0.5 flex-shrink-0">
-                            {goal.completed
-                              ? <CheckCircle2 size={18} style={{ color: '#16a34a' }} />
-                              : <Circle size={18} style={{ color: '#D4A0B0' }} />}
-                          </button>
-                          <p className="text-sm font-semibold flex-1 leading-tight" style={{ color: '#2a1520', textDecoration: goal.completed ? 'line-through' : 'none' }}>
-                            {goal.title}
-                          </p>
-                          <button onClick={(e) => openEditGoal(goal, e)} className="flex-shrink-0 hover:opacity-70" style={{ color: '#D4A0B0' }}>
-                            <Pencil size={12} />
-                          </button>
-                          <button onClick={(e) => handleDeleteGoal(goal.id, e)} className="flex-shrink-0 hover:opacity-70" style={{ color: '#D4A0B0' }}>
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
+                <div className="flex items-start gap-2 mb-2">
+                  <button onClick={(e) => handleToggleGoal(goal, e)} className="mt-0.5 flex-shrink-0">
+                    {goal.completed
+                      ? <CheckCircle2 size={18} style={{ color: 'var(--green-fg)' }} />
+                      : <Circle size={18} style={{ color: 'var(--muted)' }} />}
+                  </button>
+                  <p className="text-sm font-semibold flex-1 leading-tight" style={{ color: 'var(--text)', textDecoration: goal.completed ? 'line-through' : 'none' }}>
+                    {goal.title}
+                  </p>
+                  <button onClick={(e) => openEditGoal(goal, e)} className="flex-shrink-0 hover:opacity-70" style={{ color: 'var(--muted)' }}>
+                    <Pencil size={12} />
+                  </button>
+                  <button onClick={(e) => handleDeleteGoal(goal.id, e)} className="flex-shrink-0 hover:opacity-70" style={{ color: 'var(--muted)' }}>
+                    <Trash2 size={12} />
+                  </button>
+                </div>
 
-                        {goal.description && (
-                          <p className="text-xs ml-6 mb-2 line-clamp-2" style={{ color: '#D4A0B0' }}>{goal.description}</p>
-                        )}
+                {goal.description && (
+                  <p className="text-xs ml-6 mb-2 line-clamp-2" style={{ color: 'var(--muted)' }}>{goal.description}</p>
+                )}
 
-                        <div className="ml-6 flex items-center gap-3 flex-wrap mb-1">
-                          <span className="flex items-center gap-1 text-xs px-1.5 py-0.5 rounded-md font-medium" style={{ background: cat.color, color: cat.iconColor }}>
-                            <cat.Icon size={9} /> {cat.label}
-                          </span>
-                        </div>
+                <div className="ml-6 flex items-center gap-3 flex-wrap mb-1">
+                  <span className="flex items-center gap-1 text-xs px-1.5 py-0.5 rounded-md font-medium" style={{ background: cat.color, color: cat.iconColor }}>
+                    <cat.Icon size={9} /> {cat.label}
+                  </span>
+                </div>
 
-                        <div className="ml-6 flex items-center gap-3 flex-wrap">
-                          {goal.target_date && (
-                            <span className="flex items-center gap-1 text-xs" style={{ color: '#E0B8C4' }}>
-                              <CalendarDays size={10} />
-                              {format(parseISO(goal.target_date), 'dd MMM yyyy', { locale: es })}
-                            </span>
-                          )}
-                          {(goodCount > 0 || badCount > 0) && (
-                            <span className="flex items-center gap-2 text-xs">
-                              {goodCount > 0 && <span className="flex items-center gap-0.5" style={{ color: '#16a34a' }}><ThumbsUp size={10} /> {goodCount}</span>}
-                              {badCount  > 0 && <span className="flex items-center gap-0.5" style={{ color: '#dc2626' }}><ThumbsDown size={10} /> {badCount}</span>}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="ml-6 flex items-center gap-3 flex-wrap">
+                  {goal.target_date && (
+                    <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--muted-2)' }}>
+                      <CalendarDays size={10} />
+                      {format(parseISO(goal.target_date), 'dd MMM yyyy', { locale: es })}
+                    </span>
+                  )}
+                  {(goodCount > 0 || badCount > 0) && (
+                    <span className="flex items-center gap-2 text-xs">
+                      {goodCount > 0 && <span className="flex items-center gap-0.5" style={{ color: 'var(--green-fg)' }}><ThumbsUp size={10} /> {goodCount}</span>}
+                      {badCount  > 0 && <span className="flex items-center gap-0.5" style={{ color: 'var(--red-fg)' }}><ThumbsDown size={10} /> {badCount}</span>}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
-      {/* ── Detail modal — UN SOLO MODAL, form inline ─── */}
+      {/* Detail modal */}
       {detailGoal && (() => {
         const goalActions = actionsForGoal(detailGoal.id);
         const goodActions = goalActions.filter(a => a.type === 'buena');
@@ -300,14 +286,11 @@ export default function GoalsClient({ initial, initialActions }: Props) {
 
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ background: 'rgba(125,48,80,0.2)' }}>
-            <div style={{ background: '#fff', border: `1px solid ${BORDER}` }}
+            style={{ background: 'var(--overlay)' }}>
+            <div style={{ background: 'var(--card)', border: `1px solid ${BORDER}` }}
               className="rounded-2xl shadow-xl w-full max-w-md">
 
-              {/* Scrollable content */}
               <div className="overflow-y-auto p-6" style={{ maxHeight: '90vh' }}>
-
-                {/* Header */}
                 <div className="flex items-start gap-3 mb-4">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: cat.color }}>
                     <cat.Icon size={16} style={{ color: cat.iconColor }} />
@@ -316,102 +299,97 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                     <div className="flex items-center gap-2">
                       <button onClick={() => handleToggleGoal(detailGoal)}>
                         {detailGoal.completed
-                          ? <CheckCircle2 size={18} style={{ color: '#16a34a' }} />
-                          : <Circle size={18} style={{ color: '#D4A0B0' }} />}
+                          ? <CheckCircle2 size={18} style={{ color: 'var(--green-fg)' }} />
+                          : <Circle size={18} style={{ color: 'var(--muted)' }} />}
                       </button>
                       <h3 className="text-base font-bold flex-1" style={{ color: PINK, textDecoration: detailGoal.completed ? 'line-through' : 'none' }}>
                         {detailGoal.title}
                       </h3>
                     </div>
                     {detailGoal.description && (
-                      <p className="text-xs mt-1 ml-6" style={{ color: '#D4A0B0' }}>{detailGoal.description}</p>
+                      <p className="text-xs mt-1 ml-6" style={{ color: 'var(--muted)' }}>{detailGoal.description}</p>
                     )}
                     {detailGoal.target_date && (
-                      <p className="text-xs mt-0.5 ml-6 flex items-center gap-1" style={{ color: '#E0B8C4' }}>
+                      <p className="text-xs mt-0.5 ml-6 flex items-center gap-1" style={{ color: 'var(--muted-2)' }}>
                         <CalendarDays size={10} />
                         {format(parseISO(detailGoal.target_date), "dd 'de' MMMM yyyy", { locale: es })}
                       </p>
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <button onClick={(e) => openEditGoal(detailGoal, e)} style={{ color: '#D4A0B0' }} className="hover:opacity-70"><Pencil size={14} /></button>
-                    <button onClick={(e) => handleDeleteGoal(detailGoal.id, e)} style={{ color: '#D4A0B0' }} className="hover:opacity-70"><Trash2 size={14} /></button>
-                    <button onClick={() => { setDetailGoal(null); cancelActionForm(); }} style={{ color: '#D4A0B0' }} className="hover:opacity-70 ml-1"><X size={18} /></button>
+                    <button onClick={(e) => openEditGoal(detailGoal, e)} style={{ color: 'var(--muted)' }} className="hover:opacity-70"><Pencil size={14} /></button>
+                    <button onClick={(e) => handleDeleteGoal(detailGoal.id, e)} style={{ color: 'var(--muted)' }} className="hover:opacity-70"><Trash2 size={14} /></button>
+                    <button onClick={() => { setDetailGoal(null); cancelActionForm(); }} style={{ color: 'var(--muted)' }} className="hover:opacity-70 ml-1"><X size={18} /></button>
                   </div>
                 </div>
 
                 <div style={{ borderTop: `1px solid ${BORDER}` }} className="pt-4 space-y-4">
-
-                  {/* Good actions */}
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#16a34a' }}>
+                    <p className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--green-fg)' }}>
                       <ThumbsUp size={12} /> Buenas ({goodActions.length})
                     </p>
                     {goodActions.length === 0 && !showActionForm && (
-                      <p className="text-xs" style={{ color: '#D4A0B0' }}>Sin acciones buenas aún</p>
+                      <p className="text-xs" style={{ color: 'var(--muted)' }}>Sin acciones buenas aún</p>
                     )}
                     <div className="space-y-1.5">
                       {goodActions.map((action) => (
                         <div key={action.id} className="flex items-center gap-2 group">
                           <button onClick={() => handleToggleAction(action)} className="flex-shrink-0">
                             {action.completed
-                              ? <CheckCircle2 size={15} style={{ color: '#16a34a' }} />
+                              ? <CheckCircle2 size={15} style={{ color: 'var(--green-fg)' }} />
                               : <Circle size={15} style={{ color: '#86efac' }} />}
                           </button>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm" style={{ color: '#2a1520', textDecoration: action.completed ? 'line-through' : 'none', opacity: action.completed ? 0.5 : 1 }}>
+                            <p className="text-sm" style={{ color: 'var(--text)', textDecoration: action.completed ? 'line-through' : 'none', opacity: action.completed ? 0.5 : 1 }}>
                               {action.title}
                             </p>
-                            {fmtAction(action) && <p className="text-xs" style={{ color: '#D4A0B0' }}>{fmtAction(action)}</p>}
+                            {fmtAction(action) && <p className="text-xs" style={{ color: 'var(--muted)' }}>{fmtAction(action)}</p>}
                           </div>
-                          <button onClick={() => startEditAction(action)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#D4A0B0' }}><Pencil size={12} /></button>
-                          <button onClick={() => handleDeleteAction(action.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#D4A0B0' }}><X size={12} /></button>
+                          <button onClick={() => startEditAction(action)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><Pencil size={12} /></button>
+                          <button onClick={() => handleDeleteAction(action.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><X size={12} /></button>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Bad actions */}
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#dc2626' }}>
+                    <p className="text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: 'var(--red-fg)' }}>
                       <ThumbsDown size={12} /> Malas ({badActions.length})
                     </p>
                     {badActions.length === 0 && !showActionForm && (
-                      <p className="text-xs" style={{ color: '#D4A0B0' }}>Sin acciones malas aún</p>
+                      <p className="text-xs" style={{ color: 'var(--muted)' }}>Sin acciones malas aún</p>
                     )}
                     <div className="space-y-1.5">
                       {badActions.map((action) => (
                         <div key={action.id} className="flex items-center gap-2 group">
                           <button onClick={() => handleToggleAction(action)} className="flex-shrink-0">
                             {action.completed
-                              ? <CheckCircle2 size={15} style={{ color: '#dc2626' }} />
+                              ? <CheckCircle2 size={15} style={{ color: 'var(--red-fg)' }} />
                               : <Circle size={15} style={{ color: '#fca5a5' }} />}
                           </button>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm" style={{ color: '#2a1520', textDecoration: action.completed ? 'line-through' : 'none', opacity: action.completed ? 0.5 : 1 }}>
+                            <p className="text-sm" style={{ color: 'var(--text)', textDecoration: action.completed ? 'line-through' : 'none', opacity: action.completed ? 0.5 : 1 }}>
                               {action.title}
                             </p>
-                            {fmtAction(action) && <p className="text-xs" style={{ color: '#D4A0B0' }}>{fmtAction(action)}</p>}
+                            {fmtAction(action) && <p className="text-xs" style={{ color: 'var(--muted)' }}>{fmtAction(action)}</p>}
                           </div>
-                          <button onClick={() => startEditAction(action)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#D4A0B0' }}><Pencil size={12} /></button>
-                          <button onClick={() => handleDeleteAction(action.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#D4A0B0' }}><X size={12} /></button>
+                          <button onClick={() => startEditAction(action)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><Pencil size={12} /></button>
+                          <button onClick={() => handleDeleteAction(action.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><X size={12} /></button>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Inline action form */}
                   {showActionForm ? (
-                    <div style={{ background: '#fff7f9', border: `1px solid ${BORDER}` }} className="rounded-xl p-4 space-y-3">
+                    <div style={{ background: 'var(--btn-inactive)', border: `1px solid ${BORDER}` }} className="rounded-xl p-4 space-y-3">
                       <p className="text-xs font-bold uppercase tracking-wider" style={{ color: PINK }}>
                         {editingAction ? 'Editar acción' : 'Nueva acción'}
                       </p>
-                      {/* Tipo */}
                       <div className="flex gap-2">
                         {(['buena', 'mala'] as ActionType[]).map((t) => (
                           <button key={t} onClick={() => setActionForm({ ...actionForm, type: t })}
                             style={{
-                              background: actionForm.type === t ? (t === 'buena' ? '#d1fae5' : '#fee2e2') : '#fff',
+                              background: actionForm.type === t ? (t === 'buena' ? '#d1fae5' : '#fee2e2') : 'var(--card)',
                               color: t === 'buena' ? '#16a34a' : '#dc2626',
                               border: `1px solid ${actionForm.type === t ? (t === 'buena' ? '#6ee7b7' : '#fca5a5') : BORDER}`,
                             }}
@@ -423,22 +401,22 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                       </div>
                       <input value={actionForm.title} onChange={(e) => setActionForm({ ...actionForm, title: e.target.value })}
                         placeholder="Descripción *"
-                        style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                        style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                         className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
                       <div className="grid grid-cols-2 gap-2">
                         <input type="date" value={actionForm.action_date} onChange={(e) => setActionForm({ ...actionForm, action_date: e.target.value })}
-                          style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                          style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                           className="w-full px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
                         <input type="time" value={actionForm.action_time} onChange={(e) => setActionForm({ ...actionForm, action_time: e.target.value })}
-                          style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                          style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                           className="w-full px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
                       </div>
                       <div className="flex gap-2">
                         <button onClick={cancelActionForm}
-                          style={{ border: `1px solid ${BORDER}`, color: '#D4A0B0' }}
+                          style={{ border: `1px solid ${BORDER}`, color: 'var(--muted)' }}
                           className="flex-1 py-1.5 rounded-xl text-xs font-semibold hover:opacity-70">Cancelar</button>
                         <button onClick={handleSaveAction} disabled={saving || !actionForm.title.trim()}
-                          style={{ background: '#FFD6E0', color: PINK, border: '1px solid #f5b8cc' }}
+                          style={{ background: 'var(--pink-bg)', color: PINK, border: '1px solid var(--pink-border)' }}
                           className="flex-1 py-1.5 rounded-xl text-xs font-semibold disabled:opacity-50 hover:opacity-80">
                           {saving ? 'Guardando...' : 'Guardar'}
                         </button>
@@ -446,7 +424,7 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                     </div>
                   ) : (
                     <button onClick={startAddAction}
-                      style={{ border: `1px dashed ${BORDER}`, color: '#D4A0B0' }}
+                      style={{ border: `1px dashed ${BORDER}`, color: 'var(--muted)' }}
                       className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-sm hover:opacity-70 transition-opacity">
                       <Plus size={13} /> Nueva acción
                     </button>
@@ -458,36 +436,36 @@ export default function GoalsClient({ initial, initialActions }: Props) {
         );
       })()}
 
-      {/* ── Goal form modal ── */}
+      {/* Goal form modal */}
       {goalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(125,48,80,0.15)' }}>
-          <div style={{ background: '#fff', border: `1px solid ${BORDER}` }} className="rounded-2xl shadow-xl w-full max-w-md p-6">
+          style={{ background: 'var(--overlay)' }}>
+          <div style={{ background: 'var(--card)', border: `1px solid ${BORDER}` }} className="rounded-2xl shadow-xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-base font-bold" style={{ color: PINK }}>
                 {editGoal ? 'Editar Objetivo' : 'Nuevo Objetivo'}
               </h3>
-              <button onClick={() => setGoalOpen(false)} style={{ color: '#D4A0B0' }} className="hover:opacity-70"><X size={18} /></button>
+              <button onClick={() => setGoalOpen(false)} style={{ color: 'var(--muted)' }} className="hover:opacity-70"><X size={18} /></button>
             </div>
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Título *</label>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Título *</label>
                 <input value={goalForm.title} onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
-                  style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
               </div>
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Descripción</label>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Descripción</label>
                 <textarea value={goalForm.description} onChange={(e) => setGoalForm({ ...goalForm, description: e.target.value })}
-                  rows={2} style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                  rows={2} style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white resize-none" />
               </div>
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Categoría</label>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Categoría</label>
                 <div className="grid grid-cols-3 gap-2">
                   {CATEGORIES.map(({ value, label, Icon, color, iconColor }) => (
                     <button key={value} onClick={() => setGoalForm({ ...goalForm, category: value })}
-                      style={{ background: goalForm.category === value ? color : '#fff7f9', border: `1px solid ${goalForm.category === value ? '#f5b8cc' : BORDER}` }}
+                      style={{ background: goalForm.category === value ? color : 'var(--btn-inactive)', border: `1px solid ${goalForm.category === value ? 'var(--pink-border)' : BORDER}` }}
                       className="py-2 px-1 rounded-xl text-xs font-medium transition-all flex flex-col items-center gap-1">
                       <Icon size={14} style={{ color: iconColor }} />
                       <span style={{ color: PINK }}>{label}</span>
@@ -496,18 +474,18 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: '#D4A0B0' }}>Fecha meta</label>
+                <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Fecha meta</label>
                 <input type="date" value={goalForm.target_date} onChange={(e) => setGoalForm({ ...goalForm, target_date: e.target.value })}
-                  style={{ border: `1px solid ${BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
               </div>
             </div>
             <div className="flex gap-2 mt-6">
               <button onClick={() => setGoalOpen(false)}
-                style={{ border: `1px solid ${BORDER}`, color: '#D4A0B0' }}
+                style={{ border: `1px solid ${BORDER}`, color: 'var(--muted)' }}
                 className="flex-1 py-2 rounded-xl text-sm font-semibold hover:opacity-70">Cancelar</button>
               <button onClick={handleSaveGoal} disabled={saving || !goalForm.title.trim()}
-                style={{ background: '#FFD6E0', color: PINK, border: '1px solid #f5b8cc' }}
+                style={{ background: 'var(--pink-bg)', color: PINK, border: '1px solid var(--pink-border)' }}
                 className="flex-1 py-2 rounded-xl text-sm font-semibold disabled:opacity-50 hover:opacity-80 transition-opacity">
                 {saving ? 'Guardando...' : editGoal ? 'Guardar' : 'Agregar'}
               </button>

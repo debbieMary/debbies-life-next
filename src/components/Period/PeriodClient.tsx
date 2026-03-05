@@ -7,19 +7,19 @@ import { format, parseISO, differenceInDays, addDays } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Plus, X, Trash2, Pencil, Droplets, Sparkles, Flower2 } from 'lucide-react';
 
-const PINK_BG     = '#FFE4EE';
-const PINK_TEXT   = '#E8739A';
-const PINK_BORDER = '#FFBDD6';
-const LAV_BG      = '#F5F3FF';
-const LAV_TEXT    = '#C4B5FD';
-const LAV_BORDER  = '#DDD6FE';
-const TEAL_BG     = '#CCFBF1';
-const TEAL_TEXT   = '#2A9D8F';
-const TEAL_BORDER = '#99F6E4';
-const PEACH_BG    = '#FEF9C3';
-const PEACH_TEXT  = '#A16207';
-const PEACH_BORDER= '#FDE68A';
-const MUTED       = '#D4A8BC';
+const PINK_BG     = 'var(--pc-pink-bg)';
+const PINK_TEXT   = 'var(--pc-pink-text)';
+const PINK_BORDER = 'var(--pc-pink-border)';
+const LAV_BG      = 'var(--pc-lav-bg)';
+const LAV_TEXT    = 'var(--pc-lav-text)';
+const LAV_BORDER  = 'var(--pc-lav-border)';
+const TEAL_BG     = 'var(--pc-teal-bg)';
+const TEAL_TEXT   = 'var(--pc-teal-text)';
+const TEAL_BORDER = 'var(--pc-teal-border)';
+const PEACH_BG    = 'var(--pc-peach-bg)';
+const PEACH_TEXT  = 'var(--pc-peach-text)';
+const PEACH_BORDER= 'var(--pc-peach-border)';
+const MUTED       = 'var(--muted)';
 
 
 const todayStr = () => new Date().toISOString().split('T')[0];
@@ -162,7 +162,7 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
               {cycleDay && cycleDays && <span className="text-xs" style={{ color: PEACH_TEXT }}>· día {cycleDay} de {cycleDays}</span>}
             </div>
             <button onClick={openAddCycle}
-              style={{ background: '#fff', color: PEACH_TEXT, border: `1px solid ${PEACH_BORDER}` }}
+              style={{ background: 'var(--card)', color: PEACH_TEXT, border: `1px solid ${PEACH_BORDER}` }}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold hover:opacity-80 transition-opacity shrink-0">
               <Plus size={11} /> Actualizar
             </button>
@@ -179,7 +179,7 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
             <div className="mt-2 flex flex-wrap gap-1.5">
               {[...sortedCycles].reverse().map((c, i) => (
                 <div key={c.id} className="group flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-xl"
-                  style={{ background: '#fff', color: PEACH_TEXT, border: `1px solid ${PEACH_BORDER}` }}>
+                  style={{ background: 'var(--card)', color: PEACH_TEXT, border: `1px solid ${PEACH_BORDER}` }}>
                   <span className="font-bold">cada {c.cycle_days}d</span>
                   <span style={{ color: MUTED }}>· {format(parseISO(c.recorded_at), 'MMM yy', { locale: es })}</span>
                   {i === 0 && <span className="font-bold" style={{ color: PEACH_TEXT }}>· actual</span>}
@@ -204,23 +204,23 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
               <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: PINK_TEXT }}>Mis períodos</p>
             </div>
             <button onClick={openAddPeriod}
-              style={{ background: '#fff', color: PINK_TEXT, border: `1px solid ${PINK_BORDER}` }}
+              style={{ background: 'var(--card)', color: PINK_TEXT, border: `1px solid ${PINK_BORDER}` }}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold hover:opacity-80 transition-opacity relative">
               <Plus size={11} /> Registrar
             </button>
           </div>
 
           {sortedEntries.length === 0 ? (
-            <div className="px-4 py-3" style={{ background: '#FFF7FA' }}>
+            <div className="px-4 py-3" style={{ background: 'var(--bg)' }}>
               <p className="text-xs" style={{ color: MUTED }}>Anota tu próximo período cuando llegue.</p>
             </div>
           ) : (
-            <div style={{ background: '#FFF7FA' }}>
+            <div style={{ background: 'var(--bg)' }}>
               {[...sortedEntries].reverse().map((e, i) => (
                 <div key={e.id} className="group flex items-center gap-2.5 px-4 py-2.5 text-xs relative"
                   style={{ borderBottom: i < sortedEntries.length - 1 ? `1px solid ${PINK_BORDER}` : 'none' }}>
                   <Flower2 size={11} style={{ color: PINK_BORDER, flexShrink: 0 }} />
-                  <span className="font-semibold" style={{ color: '#5A2030' }}>
+                  <span className="font-semibold" style={{ color: 'var(--text)' }}>
                     {format(parseISO(e.start_date), "d MMM yyyy", { locale: es })}
                   </span>
                   <span className="px-2 py-0.5 rounded-full font-bold shrink-0"
@@ -240,8 +240,8 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
 
       {/* ── Modal período ── */}
       {periodOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(232,115,154,0.12)' }}>
-          <div style={{ background: '#fff', border: `1.5px solid ${PINK_BORDER}` }} className="rounded-2xl shadow-xl w-full max-w-sm p-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'var(--overlay)' }}>
+          <div style={{ background: 'var(--card)', border: `1.5px solid ${PINK_BORDER}` }} className="rounded-2xl shadow-xl w-full max-w-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Droplets size={15} style={{ color: PINK_TEXT }} />
@@ -253,20 +253,20 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest mb-1 block" style={{ color: MUTED }}>Fecha de inicio *</label>
                 <input type="date" value={periodForm.start_date} onChange={e => setPeriodForm({ ...periodForm, start_date: e.target.value })}
-                  style={{ border: `1px solid ${PINK_BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${PINK_BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" />
               </div>
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest mb-1 block" style={{ color: MUTED }}>Duración (días)</label>
                 <input type="number" value={periodForm.duration_days} min="1" max="10" onChange={e => setPeriodForm({ ...periodForm, duration_days: e.target.value })}
-                  style={{ border: `1px solid ${PINK_BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${PINK_BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" />
               </div>
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest mb-1 block" style={{ color: MUTED }}>Notas</label>
                 <textarea value={periodForm.notes} rows={2} onChange={e => setPeriodForm({ ...periodForm, notes: e.target.value })}
                   placeholder="dolor leve, manchado previo..."
-                  style={{ border: `1px solid ${PINK_BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${PINK_BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white resize-none" />
               </div>
             </div>
@@ -285,8 +285,8 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
 
       {/* ── Modal ciclo ── */}
       {cycleOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(212,132,90,0.08)' }}>
-          <div style={{ background: '#fff', border: `1.5px solid ${PEACH_BORDER}` }} className="rounded-2xl shadow-xl w-full max-w-sm p-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'var(--overlay)' }}>
+          <div style={{ background: 'var(--card)', border: `1.5px solid ${PEACH_BORDER}` }} className="rounded-2xl shadow-xl w-full max-w-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Flower2 size={15} style={{ color: PEACH_TEXT }} />
@@ -304,14 +304,14 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest mb-1 block" style={{ color: MUTED }}>Desde cuándo aplica</label>
                 <input type="date" value={cycleForm.recorded_at} onChange={e => setCycleForm({ ...cycleForm, recorded_at: e.target.value })}
-                  style={{ border: `1px solid ${PEACH_BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${PEACH_BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" />
               </div>
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-widest mb-1 block" style={{ color: MUTED }}>Notas</label>
                 <input value={cycleForm.notes} onChange={e => setCycleForm({ ...cycleForm, notes: e.target.value })}
                   placeholder="ej: después de dejar la pastilla"
-                  style={{ border: `1px solid ${PEACH_BORDER}`, color: '#2a1520' }}
+                  style={{ border: `1px solid ${PEACH_BORDER}`, color: 'var(--text)' }}
                   className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" />
               </div>
             </div>
