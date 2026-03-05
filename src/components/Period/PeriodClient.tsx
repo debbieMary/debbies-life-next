@@ -181,7 +181,7 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
                 <div key={c.id} className="group flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-xl"
                   style={{ background: 'var(--card)', color: PEACH_TEXT, border: `1px solid ${PEACH_BORDER}` }}>
                   <span className="font-bold">cada {c.cycle_days}d</span>
-                  <span style={{ color: MUTED }}>· {format(parseISO(c.recorded_at), 'MMM yy', { locale: es })}</span>
+                  <span style={{ color: MUTED }}>· {format(parseISO(c.recorded_at), 'MMM yyyy', { locale: es })}</span>
                   {i === 0 && <span className="font-bold" style={{ color: PEACH_TEXT }}>· actual</span>}
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button onClick={() => openEditCycle(c)}><Pencil size={10} /></button>
@@ -219,7 +219,7 @@ export default function PeriodClient({ initial, initialCycles }: Props) {
               {[...sortedEntries].reverse().map((e, i) => (
                 <div key={e.id} className="group flex items-center gap-2.5 px-4 py-2.5 text-xs relative"
                   style={{ borderBottom: i < sortedEntries.length - 1 ? `1px solid ${PINK_BORDER}` : 'none' }}>
-                  <Flower2 size={11} style={{ color: PINK_BORDER, flexShrink: 0 }} />
+                  <Flower2 size={11} style={{ color: PINK_TEXT, flexShrink: 0 }} />
                   <span className="font-semibold" style={{ color: 'var(--text)' }}>
                     {format(parseISO(e.start_date), "d MMM yyyy", { locale: es })}
                   </span>

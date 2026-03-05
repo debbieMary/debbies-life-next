@@ -35,7 +35,7 @@ export default function Navbar({ nombre }: NavbarProps) {
   const inicial = nombre?.charAt(0).toUpperCase() ?? '';
 
   return (
-    <nav style={{ background: 'var(--pink-bg)', borderBottom: '1px solid var(--pink-border)' }}>
+    <nav style={{ background: 'var(--pink-bg)', borderBottom: '1px solid var(--pink-border)', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50 }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14">
 
@@ -54,7 +54,7 @@ export default function Navbar({ nombre }: NavbarProps) {
             ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button onClick={toggle} title={dark ? 'Modo claro' : 'Modo oscuro'}
               style={{
                 color: 'var(--pink)', background: 'transparent',
@@ -111,36 +111,22 @@ export default function Navbar({ nombre }: NavbarProps) {
                 )}
               </div>
             )}
+            <button className="md:hidden p-2 rounded-lg" style={{ color: 'var(--pink)' }}
+              onClick={() => setMenuOpen(!menuOpen)}>
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
-
-          <button className="md:hidden p-2 rounded-lg" style={{ color: 'var(--pink)' }}
-            onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
 
         {menuOpen && (
-          <div className="md:hidden pb-3 space-y-0.5">
+          <div className="md:hidden pb-2 space-y-1">
             {navLinks.map(({ href, label, icon: Icon }) => (
               <Link key={href} href={href} style={{ color: 'var(--pink)' }}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium hover:opacity-70"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium hover:opacity-70"
                 onClick={() => setMenuOpen(false)}>
                 <Icon size={15} />{label}
               </Link>
             ))}
-            <button onClick={toggle}
-              style={{ color: 'var(--pink)', background: 'transparent', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium hover:opacity-70">
-              {dark ? <Sun size={15} /> : <Moon size={15} />}
-              <span>{dark ? 'Modo claro' : 'Modo oscuro'}</span>
-            </button>
-            <button onClick={handleLogout}
-              style={{ color: 'var(--pink)', background: 'transparent', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left' }}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium hover:opacity-70">
-              <LogOut size={15} />
-              <span>Salir</span>
-              {nombre && <span style={{ marginLeft: 'auto', fontWeight: 700 }}>{inicial}</span>}
-            </button>
           </div>
         )}
       </div>

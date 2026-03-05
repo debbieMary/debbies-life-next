@@ -33,6 +33,10 @@
   --pc-teal-bg:      #CCFBF1; --pc-teal-border: #99F6E4; --pc-teal-text:  #0F766E;
   --pc-peach-bg:     #FEF9C3; --pc-peach-border:#FDE68A; --pc-peach-text: #A16207;
   --pc-pink-bg:      #FFE4EE; --pc-pink-border: #FFBDD6; --pc-pink-text:  #E8739A;
+  /* celeste / sky blue */
+  --pc-sky-bg:       #E0F2FE; --pc-sky-border:  #BAE6FD; --pc-sky-text:   #0369A1;
+  /* amarillo pastel */
+  --pc-yellow-bg:    #FEFCE8; --pc-yellow-border:#FEF08A; --pc-yellow-text:#854D0E;
 }
 
 [data-theme="dark"] {
@@ -59,7 +63,7 @@
   /* semantic colored card backgrounds — darkened for dark mode */
   --c-green:    #064e3b; --c-green-br:    #166534;
   --c-red:      #450a0a; --c-red-br:      #7f1d1d;
-  --c-green-lt: #064e3b; --c-green-lt-br: #166534;
+  --c-green-lt: #169870; --c-green-lt-br: #22a67e;
   --c-red-lt:   #450a0a; --c-red-lt-br:   #7f1d1d;
   --c-rose:     #4a0520; --c-rose-br:     #831843;
   /* period card colors */
@@ -67,6 +71,10 @@
   --pc-teal-bg:      #80b8b0; --pc-teal-border: #509890; --pc-teal-text:  #e0faf5;
   --pc-peach-bg:     #b8b478; --pc-peach-border:#989040; --pc-peach-text: #fff8d0;
   --pc-pink-bg:      #b890a0; --pc-pink-border: #986880; --pc-pink-text:  #ffe0f0;
+  /* celeste / sky blue */
+  --pc-sky-bg:       #2a5878; --pc-sky-border:  #4a88a8; --pc-sky-text:   #bae6fd;
+  /* amarillo pastel */
+  --pc-yellow-bg:    #3a3010; --pc-yellow-border:#5a4a18; --pc-yellow-text:#fde68a;
 }
 
 body {

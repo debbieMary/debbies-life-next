@@ -193,11 +193,11 @@ export default function WeightClient({ initial, initialTarget }: Props) {
           background: toGoal === null ? 'var(--card)' : toGoal <= 0 ? '#d1fae5' : '#fce7f3',
           border: `1px solid ${toGoal === null ? BORDER : toGoal <= 0 ? '#6ee7b7' : '#f9a8d4'}`
         }} className="rounded-2xl p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--muted)' }}>Para la meta</p>
-          <p className="text-2xl font-bold" style={{ color: toGoal === null ? 'var(--muted)' : toGoal <= 0 ? '#065f46' : PINK }}>
+          <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: '#666' }}>Para la meta</p>
+          <p className="text-2xl font-bold" style={{ color: toGoal === null ? '#888' : toGoal <= 0 ? '#065f46' : '#7D3050' }}>
             {toGoal !== null ? (toGoal <= 0 ? 'Meta lograda!' : `-${toGoal.toFixed(1)} kg`) : '—'}
           </p>
-          {target && <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>Meta: {target} kg</p>}
+          {target && <p className="text-xs mt-0.5" style={{ color: '#666' }}>Meta: {target} kg</p>}
         </div>
       </div>
 

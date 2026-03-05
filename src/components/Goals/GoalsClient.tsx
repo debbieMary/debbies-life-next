@@ -8,18 +8,19 @@ import { es } from 'date-fns/locale';
 import {
   Plus, X, CheckCircle2, Circle,
   Star, Laptop2, Flower2, Heart, Sparkles, Trash2, Target, Pencil,
-  ThumbsUp, ThumbsDown, CalendarDays,
+  ThumbsUp, ThumbsDown, CalendarDays, Music2,
 } from 'lucide-react';
 
 const PINK   = 'var(--pink)';
 const BORDER = 'var(--border)';
 
-const CATEGORIES: { value: GoalCategory; label: string; Icon: any; color: string; iconColor: string }[] = [
-  { value: 'influencer',   label: 'Influencer',   Icon: Star,     color: '#fce7f3', iconColor: '#be185d' },
-  { value: 'programadora', label: 'Programadora', Icon: Laptop2,  color: '#ede9fe', iconColor: '#6d28d9' },
-  { value: 'spa',          label: 'Mi Spa',       Icon: Flower2,  color: '#dcfce7', iconColor: '#15803d' },
-  { value: 'salud',        label: 'Salud',        Icon: Heart,    color: '#fee2e2', iconColor: '#dc2626' },
-  { value: 'otro',         label: 'Otro',         Icon: Sparkles, color: '#fff7f9', iconColor: '#7D3050' },
+const CATEGORIES: { value: GoalCategory; label: string; Icon: any; color: string; iconColor: string; borderColor?: string }[] = [
+  { value: 'influencer',   label: 'Influencer',   Icon: Star,     color: 'var(--pc-peach-bg)',  iconColor: '#9A6E3E'                                       },
+  { value: 'programadora', label: 'Programadora', Icon: Laptop2,  color: 'var(--pc-lav-bg)',    iconColor: 'var(--pc-lav-text)'                            },
+  { value: 'spa',          label: 'Mi Spa',       Icon: Flower2,  color: '#c8f0c8',             iconColor: '#169870'                                       },
+  { value: 'salud',        label: 'Salud',        Icon: Heart,    color: '#FFD6E0',             iconColor: '#B06080'                                                },
+  { value: 'baile',        label: 'Baile Fitness',Icon: Music2,   color: 'var(--pc-sky-bg)',    iconColor: 'var(--pc-sky-text)'                            },
+  { value: 'otro',         label: 'Otro',         Icon: Sparkles, color: 'var(--pink-bg)',      iconColor: 'var(--pink)'                                          },
 ];
 
 const emptyGoalForm   = { title: '', description: '', category: 'otro' as GoalCategory, target_date: '' };
@@ -401,15 +402,15 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                       </div>
                       <input value={actionForm.title} onChange={(e) => setActionForm({ ...actionForm, title: e.target.value })}
                         placeholder="Descripción *"
-                        style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
-                        className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
+                        style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
+                        className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200" />
                       <div className="grid grid-cols-2 gap-2">
                         <input type="date" value={actionForm.action_date} onChange={(e) => setActionForm({ ...actionForm, action_date: e.target.value })}
-                          style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
-                          className="w-full px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
+                          style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
+                          className="w-full px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
                         <input type="time" value={actionForm.action_time} onChange={(e) => setActionForm({ ...actionForm, action_time: e.target.value })}
-                          style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
-                          className="w-full px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
+                          style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
+                          className="w-full px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
                       </div>
                       <div className="flex gap-2">
                         <button onClick={cancelActionForm}
@@ -451,24 +452,24 @@ export default function GoalsClient({ initial, initialActions }: Props) {
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Título *</label>
                 <input value={goalForm.title} onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
-                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
-                  className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
+                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
+                  className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200" />
               </div>
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Descripción</label>
                 <textarea value={goalForm.description} onChange={(e) => setGoalForm({ ...goalForm, description: e.target.value })}
-                  rows={2} style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
-                  className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white resize-none" />
+                  rows={2} style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
+                  className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 resize-none" />
               </div>
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Categoría</label>
                 <div className="grid grid-cols-3 gap-2">
-                  {CATEGORIES.map(({ value, label, Icon, color, iconColor }) => (
+                  {CATEGORIES.map(({ value, label, Icon, color, iconColor, borderColor }) => (
                     <button key={value} onClick={() => setGoalForm({ ...goalForm, category: value })}
-                      style={{ background: goalForm.category === value ? color : 'var(--btn-inactive)', border: `1px solid ${goalForm.category === value ? 'var(--pink-border)' : BORDER}` }}
+                      style={{ background: goalForm.category === value ? color : 'var(--btn-inactive)', border: `1px solid ${borderColor ?? iconColor}` }}
                       className="py-2 px-1 rounded-xl text-xs font-medium transition-all flex flex-col items-center gap-1">
                       <Icon size={14} style={{ color: iconColor }} />
-                      <span style={{ color: PINK }}>{label}</span>
+                      <span style={{ color: iconColor }}>{label}</span>
                     </button>
                   ))}
                 </div>
@@ -476,8 +477,8 @@ export default function GoalsClient({ initial, initialActions }: Props) {
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>Fecha meta</label>
                 <input type="date" value={goalForm.target_date} onChange={(e) => setGoalForm({ ...goalForm, target_date: e.target.value })}
-                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)' }}
-                  className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200 bg-white" />
+                  style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
+                  className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200" />
               </div>
             </div>
             <div className="flex gap-2 mt-6">

@@ -65,16 +65,22 @@ export default function IncomeExpenseChart({ transactions, dateFrom, dateTo }: P
 
           <div className="flex gap-3 mt-4">
             <div className="flex-1 flex items-center justify-between px-3 py-2 rounded-xl"
-              style={{ background: balanceUSD >= 0 ? '#ede9fe' : '#fff7ed', border: `1px solid ${balanceUSD >= 0 ? '#c4b5fd' : '#fdba74'}` }}>
-              <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Balance $</span>
-              <span className="text-sm font-bold tabular-nums" style={{ color: balanceUSD >= 0 ? '#5b21b6' : '#9a3412' }}>
+              style={{
+                background: balanceUSD >= 0 ? 'var(--pc-lav-bg)' : 'var(--c-red)',
+                border: `1px solid ${balanceUSD >= 0 ? 'var(--pc-lav-border)' : 'var(--c-red-br)'}`,
+              }}>
+              <span className="text-xs font-medium" style={{ color: balanceUSD >= 0 ? 'var(--pc-lav-text)' : 'var(--red-fg)' }}>Balance $</span>
+              <span className="text-sm font-bold tabular-nums" style={{ color: balanceUSD >= 0 ? 'var(--pc-lav-text)' : 'var(--red-fg)' }}>
                 {balanceUSD >= 0 ? '+' : ''}{fmtUSD(balanceUSD)}
               </span>
             </div>
             <div className="flex-1 flex items-center justify-between px-3 py-2 rounded-xl"
-              style={{ background: balanceBOB >= 0 ? '#ede9fe' : '#fff7ed', border: `1px solid ${balanceBOB >= 0 ? '#c4b5fd' : '#fdba74'}` }}>
-              <span className="text-xs font-medium" style={{ color: 'var(--muted)' }}>Balance Bs</span>
-              <span className="text-sm font-bold tabular-nums" style={{ color: balanceBOB >= 0 ? '#5b21b6' : '#9a3412' }}>
+              style={{
+                background: balanceBOB >= 0 ? 'var(--pc-lav-bg)' : 'var(--c-red)',
+                border: `1px solid ${balanceBOB >= 0 ? 'var(--pc-lav-border)' : 'var(--c-red-br)'}`,
+              }}>
+              <span className="text-xs font-medium" style={{ color: balanceBOB >= 0 ? 'var(--pc-lav-text)' : 'var(--red-fg)' }}>Balance Bs</span>
+              <span className="text-sm font-bold tabular-nums" style={{ color: balanceBOB >= 0 ? 'var(--pc-lav-text)' : 'var(--red-fg)' }}>
                 {balanceBOB >= 0 ? '+' : ''}{fmtBOB(balanceBOB)}
               </span>
             </div>

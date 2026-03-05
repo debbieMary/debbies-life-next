@@ -216,72 +216,116 @@ export default function FinancesClient({ initial, initialRates }: Props) {
         </button>
       </div>
 
-      {/* Table */}
+      {/* Table / Cards */}
       {filtered.length === 0 ? (
         <div className="text-center py-12" style={{ color: 'var(--muted)' }}>
           <Banknote size={40} className="mx-auto mb-3 opacity-30" />
           <p className="text-sm">{transactions.length === 0 ? 'Sin movimientos. ¡Registra tu primer ingreso!' : 'Sin movimientos en este rango de fechas.'}</p>
         </div>
       ) : (
-        <div style={{ border: `1px solid ${BORDER}` }} className="rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead style={{ background: 'var(--table-header)' }}>
-              <tr>
-                {['Tipo', 'Descripción', 'Categoría', 'Fecha', 'Monto', ''].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y" style={{ borderColor: BORDER }}>
-              {filtered.map((t) => (
-                <tr key={t.id} className="group hover:bg-pink-50 transition-colors">
-                  <td className="px-4 py-3">
-                    <span style={{ background: t.type === 'ingreso' ? '#d1fae5' : '#fee2e2', color: t.type === 'ingreso' ? '#065f46' : '#991b1b' }}
-                      className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full text-xs font-semibold">
-                      {t.type === 'ingreso' ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
-                      {t.type}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 font-medium" style={{ color: 'var(--text)' }}>{t.description}</td>
-                  <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{t.category}</td>
-                  <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>
-                    {format(parseISO(t.date), 'dd MMM yyyy', { locale: es })}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div>
-                      <p className="font-bold tabular-nums text-sm"
-                        style={{ color: t.type === 'ingreso' ? 'var(--green-fg)' : 'var(--red-fg)' }}>
-                        {t.type === 'ingreso' ? '+' : '-'}{toDisplay(t.amount, t.currency)}
-                      </p>
-                      {t.currency === 'BOB' && (
-                        <p className="text-xs tabular-nums" style={{ color: 'var(--muted)' }}>
-                          ≈ {t.type === 'ingreso' ? '+' : '-'}{fmtUSD(t.amount / currentRate)}
-                        </p>
-                      )}
-                      {t.currency === 'USD' && (
-                        <p className="text-xs tabular-nums" style={{ color: 'var(--muted)' }}>
-                          ≈ {t.type === 'ingreso' ? '+' : '-'}{fmtBOB(t.amount * currentRate)}
-                        </p>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => openEdit(t)} style={{ color: 'var(--muted)' }}
-                        className="opacity-0 group-hover:opacity-100 hover:opacity-70 transition-opacity">
-                        <Pencil size={13} />
-                      </button>
-                      <button onClick={() => handleDelete(t.id)} style={{ color: 'var(--muted)' }}
-                        className="hover:opacity-70 transition-opacity">
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  </td>
+        <>
+          {/* Mobile: cards */}
+          <div className="flex flex-col gap-2 sm:hidden">
+            {filtered.map((t) => (
+              <div key={t.id} style={{ background: 'var(--card)', border: `1px solid ${BORDER}` }}
+                className="rounded-2xl px-4 py-3 shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate" style={{ color: 'var(--text)' }}>{t.description}</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>
+                      {t.category} · {format(parseISO(t.date), 'dd MMM yyyy', { locale: es })}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end shrink-0">
+                    <p className="font-bold tabular-nums text-sm"
+                      style={{ color: t.type === 'ingreso' ? 'var(--green-fg)' : 'var(--red-fg)' }}>
+                      {t.type === 'ingreso' ? '+' : '-'}{toDisplay(t.amount, t.currency)}
+                    </p>
+                    <p className="text-xs tabular-nums" style={{ color: 'var(--muted)' }}>
+                      ≈ {t.type === 'ingreso' ? '+' : '-'}{t.currency === 'BOB' ? fmtUSD(t.amount / currentRate) : fmtBOB(t.amount * currentRate)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span style={{ background: t.type === 'ingreso' ? 'var(--c-green)' : 'var(--pink-bg)', color: t.type === 'ingreso' ? 'var(--green-fg)' : 'var(--pink)' }}
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold">
+                    {t.type === 'ingreso' ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                    {t.type}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => openEdit(t)} style={{ color: 'var(--muted)' }} className="hover:opacity-70 transition-opacity">
+                      <Pencil size={14} />
+                    </button>
+                    <button onClick={() => handleDelete(t.id)} style={{ color: 'var(--muted)' }} className="hover:opacity-70 transition-opacity">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: table */}
+          <div style={{ border: `1px solid ${BORDER}` }} className="hidden sm:block rounded-2xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead style={{ background: 'var(--table-header)' }}>
+                <tr>
+                  {['Tipo', 'Descripción', 'Categoría', 'Fecha', 'Monto', ''].map((h) => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y" style={{ borderColor: BORDER }}>
+                {filtered.map((t) => (
+                  <tr key={t.id} className="group hover:bg-pink-50 transition-colors">
+                    <td className="px-4 py-3">
+                      <span style={{ background: t.type === 'ingreso' ? 'var(--c-green)' : 'var(--pink-bg)', color: t.type === 'ingreso' ? 'var(--green-fg)' : 'var(--pink)' }}
+                        className="flex items-center gap-1 w-fit px-2 py-0.5 rounded-full text-xs font-semibold">
+                        {t.type === 'ingreso' ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+                        {t.type}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 font-medium" style={{ color: 'var(--text)' }}>{t.description}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{t.category}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>
+                      {format(parseISO(t.date), 'dd MMM yyyy', { locale: es })}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div>
+                        <p className="font-bold tabular-nums text-sm"
+                          style={{ color: t.type === 'ingreso' ? 'var(--green-fg)' : 'var(--red-fg)' }}>
+                          {t.type === 'ingreso' ? '+' : '-'}{toDisplay(t.amount, t.currency)}
+                        </p>
+                        {t.currency === 'BOB' && (
+                          <p className="text-xs tabular-nums" style={{ color: 'var(--muted)' }}>
+                            ≈ {t.type === 'ingreso' ? '+' : '-'}{fmtUSD(t.amount / currentRate)}
+                          </p>
+                        )}
+                        {t.currency === 'USD' && (
+                          <p className="text-xs tabular-nums" style={{ color: 'var(--muted)' }}>
+                            ≈ {t.type === 'ingreso' ? '+' : '-'}{fmtBOB(t.amount * currentRate)}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => openEdit(t)} style={{ color: 'var(--muted)' }}
+                          className="opacity-0 group-hover:opacity-100 hover:opacity-70 transition-opacity">
+                          <Pencil size={13} />
+                        </button>
+                        <button onClick={() => handleDelete(t.id)} style={{ color: 'var(--muted)' }}
+                          className="hover:opacity-70 transition-opacity">
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {/* Modal */}

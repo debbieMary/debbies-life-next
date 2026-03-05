@@ -11,16 +11,16 @@ export default function Loading() {
       {/* Ícono animado */}
       <div style={{
         width: 64, height: 64, borderRadius: '50%',
-        background: '#FFD6E0',
+        background: 'var(--pink-bg)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         animation: 'flotar 2.5s ease-in-out infinite',
       }}>
-        <Flower2 size={30} color="#7D3050" />
+        <Flower2 size={30} color="var(--pink)" />
       </div>
 
       {/* Texto */}
       <div style={{ textAlign: 'center', lineHeight: 1.5 }}>
-        <p style={{ margin: 0, color: '#7D3050', fontSize: '1.1rem', fontWeight: 700, opacity: 0.7 }}>
+        <p style={{ margin: 0, color: 'var(--pink)', fontSize: '1.1rem', fontWeight: 700, opacity: 0.7 }}>
           Cargando...
         </p>
       </div>
@@ -30,7 +30,7 @@ export default function Loading() {
         {[0, 1, 2].map(i => (
           <span key={i} style={{
             width: 8, height: 8, borderRadius: '50%',
-            background: '#f5b8cc', display: 'inline-block',
+            background: 'var(--pink-border)', display: 'inline-block',
             animation: 'saltar 1.3s ease-in-out infinite',
             animationDelay: `${i * 0.18}s`,
           }} />

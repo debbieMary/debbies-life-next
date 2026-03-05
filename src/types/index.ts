@@ -1,4 +1,4 @@
-export type GoalCategory = 'influencer' | 'programadora' | 'spa' | 'salud' | 'otro';
+export type GoalCategory = 'influencer' | 'programadora' | 'spa' | 'salud' | 'baile' | 'otro';
 
 export interface Goal {
   id: string;
