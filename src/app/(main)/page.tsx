@@ -9,11 +9,11 @@ export default async function DashboardPage() {
     supabase.from('goals').select('*').order('created_at', { ascending: false }),
     supabase.from('goal_actions').select('*'),
     supabase.from('exchange_rates').select('*').order('date', { ascending: false }),
-    supabase.from('weight_entries').select('*').neq('notes', '__target__').order('date', { ascending: true }),
+    supabase.from('weight_entries').select('*').neq('notes', '__target__').order('date', { ascending: false }),
     supabase.from('weight_entries').select('weight').eq('notes', '__target__').single(),
     supabase.from('diary_entries').select('*').order('date', { ascending: false }),
-    supabase.from('period_entries').select('*').order('start_date', { ascending: true }),
-    supabase.from('period_cycle_lengths').select('*').order('recorded_at', { ascending: true }),
+    supabase.from('period_entries').select('*').order('start_date', { ascending: false }),
+    supabase.from('period_cycle_lengths').select('*').order('recorded_at', { ascending: false }),
   ]);
 
   return (

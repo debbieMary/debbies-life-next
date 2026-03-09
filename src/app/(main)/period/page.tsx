@@ -7,8 +7,8 @@ export const revalidate = 0;
 
 export default async function PeriodPage() {
   const [{ data: entries }, { data: cycleLengths }] = await Promise.all([
-    supabase.from('period_entries').select('*').order('start_date', { ascending: true }),
-    supabase.from('period_cycle_lengths').select('*').order('recorded_at', { ascending: true }),
+    supabase.from('period_entries').select('*').order('start_date', { ascending: false }),
+    supabase.from('period_cycle_lengths').select('*').order('recorded_at', { ascending: false }),
   ]);
 
   return (

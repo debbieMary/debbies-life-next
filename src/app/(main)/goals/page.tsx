@@ -8,7 +8,7 @@ export const revalidate = 0;
 export default async function GoalsPage() {
   const [{ data: goals }, { data: actions }] = await Promise.all([
     supabase.from('goals').select('*').order('created_at', { ascending: false }),
-    supabase.from('goal_actions').select('*').order('created_at', { ascending: true }),
+    supabase.from('goal_actions').select('*').order('created_at', { ascending: false }),
   ]);
 
   return (

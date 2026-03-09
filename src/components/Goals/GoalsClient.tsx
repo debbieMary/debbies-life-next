@@ -31,25 +31,27 @@ interface Props {
   initialActions: GoalAction[];
 }
 
-const gd7    = () => { const d = new Date(); d.setDate(d.getDate() - 7); return d.toISOString().split('T')[0]; };
-const gToday = () => new Date().toISOString().split('T')[0];
+const gMonthStart = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`; };
+const gToday      = () => new Date().toISOString().split('T')[0];
 
 export default function GoalsClient({ initial, initialActions }: Props) {
   const [goals, setGoals]       = useState<Goal[]>(initial);
   const [actions, setActions]   = useState<GoalAction[]>(initialActions);
   const [saving, setSaving]     = useState(false);
-  const [dateFrom, setDateFrom] = useState(gd7());
+  const [dateFrom, setDateFrom] = useState(gMonthStart());
   const [dateTo,   setDateTo]   = useState(gToday());
 
-  const setPreset = (days: number | null) => {
+  const setPreset = (days: number | null | 'mes') => {
     if (days === null) { setDateFrom(''); setDateTo(''); return; }
+    if (days === 'mes') { setDateFrom(gMonthStart()); setDateTo(gToday()); return; }
     const d = new Date(); d.setDate(d.getDate() - days);
     setDateFrom(d.toISOString().split('T')[0]);
     setDateTo(gToday());
   };
 
-  const isPresetActive = (days: number | null) => {
+  const isPresetActive = (days: number | null | 'mes') => {
     if (days === null) return !dateFrom && !dateTo;
+    if (days === 'mes') return dateFrom === gMonthStart() && dateTo === gToday();
     const d = new Date(); d.setDate(d.getDate() - days);
     return dateFrom === d.toISOString().split('T')[0] && dateTo === gToday();
   };
@@ -188,7 +190,7 @@ export default function GoalsClient({ initial, initialActions }: Props) {
               className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            {[{ label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '3m', days: 90 }, { label: 'Todo', days: null }].map(({ label, days }) => (
+            {([{ label: 'Mes', days: 'mes' }, { label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '3m', days: 90 }, { label: 'Todo', days: null }] as { label: string; days: number | null | 'mes' }[]).map(({ label, days }) => (
               <button key={label} onClick={() => setPreset(days)}
                 style={{
                   background: isPresetActive(days) ? 'var(--pink-bg)' : 'var(--btn-inactive)',
@@ -334,7 +336,7 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                     )}
                     <div className="space-y-1.5">
                       {goodActions.map((action) => (
-                        <div key={action.id} className="flex items-center gap-2 group">
+                        <div key={action.id} className="flex items-center gap-2">
                           <button onClick={() => handleToggleAction(action)} className="flex-shrink-0">
                             {action.completed
                               ? <CheckCircle2 size={15} style={{ color: 'var(--green-fg)' }} />
@@ -346,8 +348,8 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                             </p>
                             {fmtAction(action) && <p className="text-xs" style={{ color: 'var(--muted)' }}>{fmtAction(action)}</p>}
                           </div>
-                          <button onClick={() => startEditAction(action)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><Pencil size={12} /></button>
-                          <button onClick={() => handleDeleteAction(action.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><X size={12} /></button>
+                          <button onClick={() => startEditAction(action)} className="hover:opacity-70" style={{ color: 'var(--muted)' }}><Pencil size={12} /></button>
+                          <button onClick={() => handleDeleteAction(action.id)} className="hover:opacity-70" style={{ color: 'var(--muted)' }}><X size={12} /></button>
                         </div>
                       ))}
                     </div>
@@ -362,7 +364,7 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                     )}
                     <div className="space-y-1.5">
                       {badActions.map((action) => (
-                        <div key={action.id} className="flex items-center gap-2 group">
+                        <div key={action.id} className="flex items-center gap-2">
                           <button onClick={() => handleToggleAction(action)} className="flex-shrink-0">
                             {action.completed
                               ? <CheckCircle2 size={15} style={{ color: 'var(--red-fg)' }} />
@@ -374,8 +376,8 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                             </p>
                             {fmtAction(action) && <p className="text-xs" style={{ color: 'var(--muted)' }}>{fmtAction(action)}</p>}
                           </div>
-                          <button onClick={() => startEditAction(action)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><Pencil size={12} /></button>
-                          <button onClick={() => handleDeleteAction(action.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--muted)' }}><X size={12} /></button>
+                          <button onClick={() => startEditAction(action)} className="hover:opacity-70" style={{ color: 'var(--muted)' }}><Pencil size={12} /></button>
+                          <button onClick={() => handleDeleteAction(action.id)} className="hover:opacity-70" style={{ color: 'var(--muted)' }}><X size={12} /></button>
                         </div>
                       ))}
                     </div>
@@ -404,7 +406,7 @@ export default function GoalsClient({ initial, initialActions }: Props) {
                         placeholder="Descripción *"
                         style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
                         className="w-full px-3 py-2 rounded-xl text-sm outline-none focus:ring-2 focus:ring-pink-200" />
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
                         <input type="date" value={actionForm.action_date} onChange={(e) => setActionForm({ ...actionForm, action_date: e.target.value })}
                           style={{ border: `1px solid ${BORDER}`, color: 'var(--text)', background: 'var(--input)' }}
                           className="w-full px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />

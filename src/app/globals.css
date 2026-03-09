@@ -134,10 +134,13 @@ body {
   --muted:     #475569;
 }
 
-/* ── Date picker ─────────────────────────────────────────── */
-input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
-input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
-[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+/* ── Date / Time picker ───────────────────────────────────── */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
+[data-theme="dark"] input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
 
 /* ── Number inputs ───────────────────────────────────────── */
 input[type=number]::-webkit-inner-spin-button,

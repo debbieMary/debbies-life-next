@@ -9,8 +9,8 @@ import WeightSummary from './WeightSummary';
 import PeriodSummary from './PeriodSummary';
 import ExportPDFButton from './ExportPDFButton';
 
-const d7    = () => { const d = new Date(); d.setDate(d.getDate() - 7);  return d.toISOString().split('T')[0]; };
-const today = () => new Date().toISOString().split('T')[0];
+const dMonthStart = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`; };
+const today       = () => new Date().toISOString().split('T')[0];
 
 interface Props {
   transactions:  Transaction[];
@@ -25,11 +25,12 @@ interface Props {
 }
 
 export default function DashboardClient({ transactions, goals, goalActions, rates, weightEntries, weightTarget, diaryEntries, periodEntries, cycleLengths }: Props) {
-  const [dateFrom, setDateFrom] = useState(d7());
+  const [dateFrom, setDateFrom] = useState(dMonthStart());
   const [dateTo,   setDateTo]   = useState(today());
 
-  const setPreset = (days: number | null) => {
+  const setPreset = (days: number | null | 'mes') => {
     if (days === null) { setDateFrom(''); setDateTo(''); return; }
+    if (days === 'mes') { setDateFrom(dMonthStart()); setDateTo(today()); return; }
     const d = new Date(); d.setDate(d.getDate() - days);
     setDateFrom(d.toISOString().split('T')[0]);
     setDateTo(today());
@@ -42,15 +43,17 @@ export default function DashboardClient({ transactions, goals, goalActions, rate
     (!dateFrom || w.date >= dateFrom) && (!dateTo || w.date <= dateTo)
   );
 
-  const PRESETS = [
-    { label: '7d',  days: 7   },
-    { label: '30d', days: 30  },
-    { label: '3m',  days: 90  },
+  const PRESETS: { label: string; days: number | null | 'mes' }[] = [
+    { label: 'Mes',  days: 'mes' },
+    { label: '7d',   days: 7    },
+    { label: '30d',  days: 30   },
+    { label: '3m',   days: 90   },
     { label: 'Todo', days: null },
   ];
 
-  const isActive = (days: number | null) => {
+  const isActive = (days: number | null | 'mes') => {
     if (days === null) return !dateFrom && !dateTo;
+    if (days === 'mes') return dateFrom === dMonthStart() && dateTo === today();
     const d = new Date(); d.setDate(d.getDate() - days);
     return dateFrom === d.toISOString().split('T')[0] && dateTo === today();
   };

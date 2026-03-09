@@ -49,16 +49,16 @@ export default function IncomeExpenseChart({ transactions, dateFrom, dateTo }: P
               ]} contentStyle={{ border: '1px solid var(--border)', borderRadius: 12, fontSize: 12, background: 'var(--card)', color: 'var(--text)' }} />
               <Legend wrapperStyle={{ fontSize: 11, color: 'var(--muted)' }} />
               <Bar dataKey="ingresoUSD" name="Ingresos $"  fill="#86efac" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="ingresoUSD" position="top" formatter={(v: any) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#065f46', fontWeight: 700 }} />
+                <LabelList dataKey="ingresoUSD" position="top" formatter={(v: any) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#86efac', fontWeight: 700 }} />
               </Bar>
               <Bar dataKey="gastoUSD"   name="Gastos $"    fill="#C9849A" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="gastoUSD"   position="top" formatter={(v: any) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#991b1b', fontWeight: 700 }} />
+                <LabelList dataKey="gastoUSD"   position="top" formatter={(v: any) => v > 0 ? fmtUSD(v) : ''} style={{ fontSize: 10, fill: '#C9849A', fontWeight: 700 }} />
               </Bar>
               <Bar dataKey="ingresoBOB" name="Ingresos Bs" fill="#6ee7b7" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="ingresoBOB" position="top" formatter={(v: any) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#065f46', fontWeight: 700 }} />
+                <LabelList dataKey="ingresoBOB" position="top" formatter={(v: any) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#6ee7b7', fontWeight: 700 }} />
               </Bar>
               <Bar dataKey="gastoBOB"   name="Gastos Bs"   fill="#f9a8d4" radius={[4,4,0,0]} maxBarSize={40}>
-                <LabelList dataKey="gastoBOB"   position="top" formatter={(v: any) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#991b1b', fontWeight: 700 }} />
+                <LabelList dataKey="gastoBOB"   position="top" formatter={(v: any) => v > 0 ? fmtBOB(v) : ''} style={{ fontSize: 10, fill: '#f9a8d4', fontWeight: 700 }} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>

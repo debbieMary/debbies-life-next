@@ -10,7 +10,7 @@ export default async function WeightPage() {
     .from('weight_entries')
     .select('*')
     .neq('notes', '__target__')
-    .order('date', { ascending: true });
+    .order('date', { ascending: false });
 
   const { data: targetData } = await supabase
     .from('weight_entries')

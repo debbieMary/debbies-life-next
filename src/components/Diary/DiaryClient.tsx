@@ -38,20 +38,25 @@ export default function DiaryClient({ initial }: Props) {
   const [form, setForm]         = useState(emptyForm);
   const [selected, setSelected] = useState<DiaryEntry | null>(null);
   const [error, setError]       = useState<string | null>(null);
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo]     = useState('');
+  const dMonthStart = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`; };
+  const dTodayStr   = () => new Date().toISOString().split('T')[0];
 
-  const setPreset = (days: number | null) => {
+  const [dateFrom, setDateFrom] = useState(dMonthStart());
+  const [dateTo, setDateTo]     = useState(dTodayStr());
+
+  const setPreset = (days: number | null | 'mes') => {
     if (days === null) { setDateFrom(''); setDateTo(''); return; }
+    if (days === 'mes') { setDateFrom(dMonthStart()); setDateTo(dTodayStr()); return; }
     const d = new Date(); d.setDate(d.getDate() - days);
     setDateFrom(d.toISOString().split('T')[0]);
-    setDateTo(new Date().toISOString().split('T')[0]);
+    setDateTo(dTodayStr());
   };
 
-  const isActive = (days: number | null) => {
+  const isActive = (days: number | null | 'mes') => {
     if (days === null) return !dateFrom && !dateTo;
+    if (days === 'mes') return dateFrom === dMonthStart() && dateTo === dTodayStr();
     const d = new Date(); d.setDate(d.getDate() - days);
-    return dateFrom === d.toISOString().split('T')[0] && dateTo === new Date().toISOString().split('T')[0];
+    return dateFrom === d.toISOString().split('T')[0] && dateTo === dTodayStr();
   };
 
   const openAdd = () => { setEditId(null); setForm(emptyForm); setOpen(true); };
@@ -91,10 +96,11 @@ export default function DiaryClient({ initial }: Props) {
     if (selected?.id === id) setSelected(null);
   };
 
-  const PRESETS = [
-    { label: '7d',   days: 7   },
-    { label: '30d',  days: 30  },
-    { label: '3m',   days: 90  },
+  const PRESETS: { label: string; days: number | null | 'mes' }[] = [
+    { label: 'Mes',  days: 'mes' },
+    { label: '7d',   days: 7    },
+    { label: '30d',  days: 30   },
+    { label: '3m',   days: 90   },
     { label: 'Todo', days: null },
   ];
 

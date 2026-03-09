@@ -32,8 +32,8 @@ interface Props {
   initialTarget: number | null;
 }
 
-const wToday7   = () => { const d = new Date(); d.setDate(d.getDate() - 7); return d.toISOString().split('T')[0]; };
-const wTodayStr = () => new Date().toISOString().split('T')[0];
+const wMonthStart = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`; };
+const wTodayStr   = () => new Date().toISOString().split('T')[0];
 
 export default function WeightClient({ initial, initialTarget }: Props) {
   const [entries, setEntries]       = useState<WeightEntry[]>(initial);
@@ -46,18 +46,20 @@ export default function WeightClient({ initial, initialTarget }: Props) {
     weight: '', date: new Date().toISOString().split('T')[0], notes: '',
   });
   const [targetInput, setTargetInput] = useState(String(initialTarget ?? ''));
-  const [dateFrom, setDateFrom] = useState(wToday7());
+  const [dateFrom, setDateFrom] = useState(wMonthStart());
   const [dateTo, setDateTo]     = useState(wTodayStr());
 
-  const setPreset = (days: number | null) => {
+  const setPreset = (days: number | null | 'mes') => {
     if (days === null) { setDateFrom(''); setDateTo(''); return; }
+    if (days === 'mes') { setDateFrom(wMonthStart()); setDateTo(wTodayStr()); return; }
     const d = new Date(); d.setDate(d.getDate() - days);
     setDateFrom(d.toISOString().split('T')[0]);
     setDateTo(wTodayStr());
   };
 
-  const isPresetActive = (days: number | null) => {
+  const isPresetActive = (days: number | null | 'mes') => {
     if (days === null) return !dateFrom && !dateTo;
+    if (days === 'mes') return dateFrom === wMonthStart() && dateTo === wTodayStr();
     const d = new Date(); d.setDate(d.getDate() - days);
     return dateFrom === d.toISOString().split('T')[0] && dateTo === wTodayStr();
   };
@@ -146,7 +148,7 @@ export default function WeightClient({ initial, initialTarget }: Props) {
               className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            {[{ label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '3m', days: 90 }, { label: 'Todo', days: null }].map(({ label, days }) => (
+            {([{ label: 'Mes', days: 'mes' }, { label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '3m', days: 90 }, { label: 'Todo', days: null }] as { label: string; days: number | null | 'mes' }[]).map(({ label, days }) => (
               <button key={label} onClick={() => setPreset(days)}
                 style={{
                   background: isPresetActive(days) ? 'var(--pink-bg)' : 'var(--btn-inactive)',

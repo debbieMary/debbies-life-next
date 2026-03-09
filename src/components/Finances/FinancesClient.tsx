@@ -25,8 +25,8 @@ interface Props {
   initialRates: ExchangeRate[];
 }
 
-const today7   = () => { const d = new Date(); d.setDate(d.getDate() - 7); return d.toISOString().split('T')[0]; };
-const todayStr = () => new Date().toISOString().split('T')[0];
+const todayStr   = () => new Date().toISOString().split('T')[0];
+const monthStart = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`; };
 
 export default function FinancesClient({ initial, initialRates }: Props) {
   const [transactions, setTransactions] = useState<Transaction[]>(initial);
@@ -35,7 +35,7 @@ export default function FinancesClient({ initial, initialRates }: Props) {
   const [form, setForm]       = useState(emptyForm);
   const [saving, setSaving]   = useState(false);
   const [editId, setEditId]   = useState<string | null>(null);
-  const [dateFrom, setDateFrom] = useState(today7());
+  const [dateFrom, setDateFrom] = useState(monthStart());
   const [dateTo, setDateTo]     = useState(todayStr());
 
   const currentRate = rates[0]?.rate ?? 1;
@@ -45,15 +45,17 @@ export default function FinancesClient({ initial, initialRates }: Props) {
     (!dateFrom || t.date >= dateFrom) && (!dateTo || t.date <= dateTo)
   );
 
-  const setPreset = (days: number | null) => {
+  const setPreset = (days: number | null | 'mes') => {
     if (days === null) { setDateFrom(''); setDateTo(''); return; }
+    if (days === 'mes') { setDateFrom(monthStart()); setDateTo(todayStr()); return; }
     const d = new Date(); d.setDate(d.getDate() - days);
     setDateFrom(d.toISOString().split('T')[0]);
     setDateTo(todayStr());
   };
 
-  const isPresetActive = (days: number | null) => {
+  const isPresetActive = (days: number | null | 'mes') => {
     if (days === null) return !dateFrom && !dateTo;
+    if (days === 'mes') return dateFrom === monthStart() && dateTo === todayStr();
     const d = new Date(); d.setDate(d.getDate() - days);
     return dateFrom === d.toISOString().split('T')[0] && dateTo === todayStr();
   };
@@ -91,13 +93,16 @@ export default function FinancesClient({ initial, initialRates }: Props) {
     if (!form.description || !form.amount || !form.category) return;
     setSaving(true);
     if (editId) {
-      const { data, error } = await supabase.from('transactions')
-        .update({
-          description: form.description.trim(), amount: parseFloat(form.amount),
-          type: form.type, currency: form.currency, category: form.category, date: form.date,
-        })
-        .eq('id', editId).select().single();
-      if (!error && data) { setTransactions((prev) => prev.map((t) => t.id === editId ? data : t)); closeModal(); }
+      const payload = {
+        description: form.description.trim(), amount: parseFloat(form.amount),
+        type: form.type, currency: form.currency, category: form.category, date: form.date,
+      };
+      setTransactions((prev) => prev.map((t) => t.id === editId ? { ...t, ...payload } : t));
+      closeModal();
+      setSaving(false);
+      supabase.from('transactions').update(payload).eq('id', editId).select().single()
+        .then(({ data }) => { if (data) setTransactions((prev) => prev.map((t) => t.id === editId ? data : t)); });
+      return;
     } else {
       const isCambio = form.type === 'gasto' && form.currency === 'USD' && form.category === 'Cambio de moneda';
       if (isCambio) {
@@ -146,7 +151,7 @@ export default function FinancesClient({ initial, initialRates }: Props) {
               className="flex-1 min-w-0 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-pink-200" />
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            {[{ label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '3m', days: 90 }, { label: 'Todo', days: null }].map(({ label, days }) => (
+            {([{ label: 'Mes', days: 'mes' }, { label: '7d', days: 7 }, { label: '30d', days: 30 }, { label: '3m', days: 90 }, { label: 'Todo', days: null }] as { label: string; days: number | null | 'mes' }[]).map(({ label, days }) => (
               <button key={label} onClick={() => setPreset(days)}
                 style={{
                   background: isPresetActive(days) ? 'var(--pink-bg)' : 'var(--btn-inactive)',
