@@ -97,13 +97,15 @@ export default function FinancesClient({ initial, initialRates }: Props) {
         description: form.description.trim(), amount: parseFloat(form.amount),
         type: form.type, currency: form.currency, category: form.category, date: form.date,
       };
-      setTransactions((prev) => prev.map((t) => t.id === editId ? { ...t, ...payload } : t));
+      const sortDesc = (arr: typeof transactions) => [...arr].sort((a, b) => b.date.localeCompare(a.date));
+      setTransactions((prev) => sortDesc(prev.map((t) => t.id === editId ? { ...t, ...payload } : t)));
       closeModal();
       setSaving(false);
       supabase.from('transactions').update(payload).eq('id', editId).select().single()
-        .then(({ data }) => { if (data) setTransactions((prev) => prev.map((t) => t.id === editId ? data : t)); });
+        .then(({ data }) => { if (data) setTransactions((prev) => sortDesc(prev.map((t) => t.id === editId ? data : t))); });
       return;
     } else {
+      const sortDesc = (arr: typeof transactions) => [...arr].sort((a, b) => b.date.localeCompare(a.date));
       const isCambio = form.type === 'gasto' && form.currency === 'USD' && form.category === 'Cambio de moneda';
       if (isCambio) {
         const usd = parseFloat(form.amount);
@@ -111,13 +113,13 @@ export default function FinancesClient({ initial, initialRates }: Props) {
           { description: form.description.trim(), amount: usd, type: 'gasto',   currency: 'USD', category: 'Cambio de moneda', date: form.date },
           { description: form.description.trim(), amount: usd * currentRate,    type: 'ingreso', currency: 'BOB', category: 'Cambio de moneda', date: form.date },
         ]).select();
-        if (!error && data) { setTransactions((prev) => [...data, ...prev]); closeModal(); }
+        if (!error && data) { setTransactions((prev) => sortDesc([...data, ...prev])); closeModal(); }
       } else {
         const { data, error } = await supabase.from('transactions').insert([{
           description: form.description.trim(), amount: parseFloat(form.amount),
           type: form.type, currency: form.currency, category: form.category, date: form.date,
         }]).select().single();
-        if (!error && data) { setTransactions((prev) => [data, ...prev]); closeModal(); }
+        if (!error && data) { setTransactions((prev) => sortDesc([data, ...prev])); closeModal(); }
       }
     }
     setSaving(false);
@@ -370,8 +372,8 @@ export default function FinancesClient({ initial, initialRates }: Props) {
               </div>
 
               {[
-                { label: 'Descripción', key: 'description', type: 'text', placeholder: '' },
                 { label: `Monto (${form.currency})`, key: 'amount', type: 'number', placeholder: '0.00' },
+                { label: 'Descripción', key: 'description', type: 'text', placeholder: '' },
               ].map(({ label, key, type, placeholder }) => (
                 <div key={key}>
                   <label className="text-xs font-semibold uppercase tracking-wider mb-1 block" style={{ color: 'var(--muted)' }}>{label}</label>
